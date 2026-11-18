@@ -50,17 +50,17 @@ Scope: a runnable, offline-first, proof-carrying metadata engine with synthetic 
 - [x] G10: Real GDC/PDC acquisition and an independent held-out evaluator are not falsely marked complete; their current state is recorded as BLOCKED or PENDING_EXTERNAL with exact reasons and no fabricated counts.
   EVIDENCE: README.md, docs/evidence-report.md, and handoffs/stage-1-handoff.md plus handoffs/stage-6-handoff.md mark both external areas PENDING_EXTERNAL.
 
-- [ ] G11: The workspace is a real Git repository with a non-empty initial commit containing the engine, tests, schemas, docs, and demo fixture.
+- [x] G11: The workspace is a real Git repository with a non-empty initial commit containing the engine, tests, schemas, docs, and demo fixture.
   CHECK: python -c "import subprocess; assert subprocess.check_output(['git','rev-parse','--is-inside-work-tree'], text=True).strip() == 'true'; assert subprocess.check_output(['git','rev-list','--count','HEAD'], text=True).strip() != '0'; tracked=subprocess.check_output(['git','ls-files'], text=True); assert 'README.md' in tracked and 'evidence_engine/cli.py' in tracked and 'tests/test_demo.py' in tracked; print('repository commit and tracked deliverables passed')"
   EXPECT: repository commit and tracked deliverables passed
-  EVIDENCE: pending
+  EVIDENCE: repository commit and tracked deliverables passed
 
-- [ ] G12: A fresh synthetic demo invocation produces a supported result, a replay-valid certificate, normalized export, and a frozen snapshot artifact.
+- [x] G12: A fresh synthetic demo invocation produces a supported result, a replay-valid certificate, normalized export, and a frozen snapshot artifact.
   CHECK: python -m evidence_engine demo --out artifacts/gate-demo
   EXPECT: SUPPORTED
-  EVIDENCE: pending
+  EVIDENCE: "status": "SUPPORTED" | }
 
-- [ ] G13: The repository documents the exact offline demo command and distinguishes synthetic evidence from real-source and held-out evaluation status.
-  EVIDENCE: pending
+- [x] G13: The repository documents the exact offline demo command and distinguishes synthetic evidence from real-source and held-out evaluation status.
+  EVIDENCE: README.md documents `python -m evidence_engine demo --out artifacts/demo`; docs/evidence-report.md marks real GDC/PDC snapshots and held-out evaluation PENDING_EXTERNAL.
 
 <!-- Every checked gate must have actual evidence. If a gate is impossible, add ABANDON: <gate> <reason> instead of silently dropping it. -->
