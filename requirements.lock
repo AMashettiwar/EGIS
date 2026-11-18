@@ -1,3 +1,4 @@
-# Runtime dependencies: none; the engine uses Python 3.11+ standard library only.
+# Runtime dependency lock for the deterministic engine.
 # Development validation lock captured from the available Python 3.11 environment.
+cryptography==49.0.0
 pytest==8.3.3

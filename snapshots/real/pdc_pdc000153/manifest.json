@@ -1,0 +1,36 @@
+{
+  "adapter_version": "pdc-public-api-v1",
+  "cohort_id": null,
+  "complete": true,
+  "coverage": {
+    "pdc": {
+      "complete": true,
+      "expected_total": 115,
+      "page_count": 1,
+      "requested_count": 115,
+      "retrieved_count": 115,
+      "scope": "PDC000153"
+    }
+  },
+  "derivation": {
+    "input": "raw.json",
+    "input_sha256": "dc2dd6bb31d9fbdab0433450d3a652fa17770de53cc19c6d6652bf52fa07887b",
+    "output": "normalized.json",
+    "output_sha256": "2116aafbd3ec8bff520598d3e03018f9620880668acc69a6f61f84410d38805e",
+    "version": "raw-to-normalized-v1"
+  },
+  "fixture_id": null,
+  "manifest_sha256": "c7ba39d7231259c54093584f60de67eff4bdf498134b82a96b5c7776edc79071",
+  "normalized_content_sha256": "2116aafbd3ec8bff520598d3e03018f9620880668acc69a6f61f84410d38805e",
+  "publication": "READY",
+  "raw_content_sha256": "dc2dd6bb31d9fbdab0433450d3a652fa17770de53cc19c6d6652bf52fa07887b",
+  "request": {
+    "endpoint": "clinicalPerStudy",
+    "pdc_study_id": "PDC000153"
+  },
+  "retrieved_at_utc": "2026-11-18T01:43:20+00:00",
+  "schema_version": "1.0.0",
+  "snapshot_id": "pdc-dc2dd6bb31d9fbda",
+  "source": "pdc",
+  "sqlite_sha256": "48d59aa5a2fc5821392761dfbe00c01a79919752c14a215179e402894a8d9a16"
+}

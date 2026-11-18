@@ -2,8 +2,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from evidence_engine.evaluator import run_hidden
-from evidence_engine.fixture import create_synthetic_snapshot
+from cancer_evidence.evaluator import run_hidden
+from cancer_evidence.fixture import create_synthetic_snapshot
 
 
 class EvaluatorRunnerTests(unittest.TestCase):

@@ -3,11 +3,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from evidence_engine.certificate import issue_certificate
-from evidence_engine.fixture import create_synthetic_snapshot
-from evidence_engine.engine import evaluate
-from evidence_engine.snapshot import write_snapshot
-from evidence_engine.replay import replay_certificate
+from cancer_evidence.certificate import issue_certificate
+from cancer_evidence.fixture import create_synthetic_snapshot
+from cancer_evidence.engine import evaluate
+from cancer_evidence.snapshot import write_snapshot
+from cancer_evidence.replay import replay_certificate
 
 
 class ReplayTests(unittest.TestCase):
@@ -36,7 +36,7 @@ class ReplayTests(unittest.TestCase):
             data["evidence_scope"]["source"] = "pdc"
             unsigned = dict(data)
             unsigned.pop("certificate_sha256")
-            from evidence_engine.snapshot import canonical_json, sha256_bytes
+            from cancer_evidence.snapshot import canonical_json, sha256_bytes
             data["certificate_sha256"] = sha256_bytes(canonical_json(unsigned).encode("utf-8"))
             certificate.write_text(json.dumps(data), encoding="utf-8")
             self.assertFalse(replay_certificate(snapshot, certificate)["valid"])
@@ -46,7 +46,7 @@ class ReplayTests(unittest.TestCase):
             root = Path(directory)
             snapshot = root / "snapshot"
             certificate = root / "certificate.json"
-            from evidence_engine.fixture import synthetic_bundle
+            from cancer_evidence.fixture import synthetic_bundle
             bundle = synthetic_bundle()
             bundle["coverage"]["gdc"]["complete"] = False
             write_snapshot(bundle, snapshot)
@@ -59,7 +59,7 @@ class ReplayTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             snapshot = root / "snapshot"
-            from evidence_engine.fixture import synthetic_bundle
+            from cancer_evidence.fixture import synthetic_bundle
             bundle = synthetic_bundle()
             bundle["evidence"].append({"evidence_id": "ev:gdc:assay:A001:conflict2", "entity_id": "gdc:assay:A001", "field_name": "eligible", "raw_value": False, "canonical_value": False, "source_record_id": "A001-conflict2"})
             write_snapshot(bundle, snapshot)
@@ -76,7 +76,7 @@ class ReplayTests(unittest.TestCase):
             root = Path(directory)
             snapshot = root / "snapshot"
             certificate = root / "certificate.json"
-            from evidence_engine.fixture import synthetic_bundle
+            from cancer_evidence.fixture import synthetic_bundle
             bundle = synthetic_bundle()
             del bundle["coverage"]["gdc"]
             write_snapshot(bundle, snapshot)

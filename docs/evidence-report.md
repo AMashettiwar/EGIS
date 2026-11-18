@@ -8,7 +8,14 @@ Commands actually run:
 
 ```powershell
 python -m unittest discover -s tests -v
-python -m evidence_engine demo --out artifacts/demo
+python scripts/run_demo.py --out artifacts/verified-demo
+
+Frozen public snapshot evidence (acquired 2026-11-18 UTC):
+
+- `snapshots/real/gdc_tcga_luad/manifest.json`: 585 TCGA-LUAD cases, 3 pages, complete.
+- `snapshots/real/pdc_pdc000153/manifest.json`: 115 PDC000153 cases, 1 GraphQL response, complete.
+- `scripts/compare_real_inventories.py` reports the inventories side by side and returns `UNKNOWN/NO_APPROVED_MAPPING` for cross-cohort overlap.
+- Blind evaluation, clinical review, and release acceptance remain `PENDING_EXTERNAL`.
 & 'C:\Users\Ankith Mashettiwar\AppData\Local\Programs\Python\Python311\python.exe' -m pytest -q
 ```
 
@@ -16,7 +23,7 @@ Observed results: unittest `Ran 34 tests ... OK`; pytest `34 passed in 3.83s` us
 
 ## External status
 
-- GDC real-source snapshot: `PENDING_EXTERNAL` — no acquisition artifact, page-completeness proof, or frozen hash is present.
+- GDC real-source snapshot: frozen public metadata is present under `snapshots/real/gdc_tcga_luad/`; completeness and hash proof are in `PROOF.md`. Blind evaluation remains `PENDING_EXTERNAL`.
 - PDC real-source snapshot: `PENDING_EXTERNAL` — the study identity is documented, but the versioned live response is not frozen in this repository.
 - Independent hidden evaluator: `PENDING_EXTERNAL` — runner exists; hidden expected answers and outside scoring are not present.
 - Public synthetic tests: status is determined by the commands above; synthetic results must not be reported as portal results.

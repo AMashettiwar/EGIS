@@ -2,10 +2,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from evidence_engine.engine import evaluate
-from evidence_engine.fixture import create_synthetic_snapshot
-from evidence_engine.fixture import synthetic_bundle
-from evidence_engine.snapshot import write_snapshot
+from cancer_evidence.engine import evaluate
+from cancer_evidence.fixture import create_synthetic_snapshot
+from cancer_evidence.fixture import synthetic_bundle
+from cancer_evidence.snapshot import write_snapshot
 
 
 class EngineTests(unittest.TestCase):

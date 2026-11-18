@@ -17,9 +17,9 @@ Shared conventions:
 ## Tree and ownership
 
 1. Contract and source boundary
-   1.1 Core models, schemas, snapshots, and synthetic fixture (`evidence_engine/{model,snapshot,schema,fixture}.py`, `schemas/`)
-   1.2 Deterministic query engine, certificates, and independent replay (`evidence_engine/{engine,certificate,replay}.py`)
-   1.3 CLI, source adapter boundary, evaluator runner, and documentation (`evidence_engine/{cli,adapters,evaluator}.py`, `README.md`, `docs/`, `pyproject.toml`)
+   1.1 Core models, schemas, snapshots, and synthetic fixture (`src/cancer_evidence/{model,snapshot,schema,fixture}.py`, `schemas/`)
+   1.2 Deterministic query engine, certificates, and independent replay (`src/cancer_evidence/{engine,certificate,replay}.py`)
+   1.3 CLI, source adapter boundary, evaluator runner, and documentation (`src/cancer_evidence/{cli,adapters,evaluator}.py`, `README.md`, `docs/`, `pyproject.toml`)
 2. Integration and verification
    2.1 Public and negative tests (`tests/`)
    2.2 Stage handoffs and final evidence report (`handoffs/`, `docs/evidence-report.md`)
@@ -28,7 +28,7 @@ Each leaf owns its listed files. The root owns integration, final gate reruns, a
 
 ## Current requested deliverable
 
-The new inspectable offline demo is a separate package under `src/cancer_evidence/`. It uses only `examples/synthetic_fixture.json` and `examples/synthetic_overlap.json`; it must never call GDC/PDC. Its production engine and replay checker are separate modules with no production-engine import in replay. The legacy `evidence_engine/` package remains untouched by this leaf.
+The product package is consolidated under `src/cancer_evidence/`. Acquisition scripts may access public GDC/PDC metadata, but answer and replay paths consume only frozen snapshots. The replay checker has no production-engine import.
 
 ## Status log
 

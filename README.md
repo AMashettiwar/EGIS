@@ -1,64 +1,113 @@
-# Cancer Evidence Engine — offline synthetic demo
+# Cancer Evidence Engine
 
-This repository contains a small, inspectable, non-generative demo of a proof-carrying cancer metadata query. The runnable demo uses only the clearly labeled fixture in `examples/synthetic_fixture.json`.
+This is a deterministic, non-generative metadata engine. Runtime answer and
+verification paths use only a frozen snapshot; they do not call an LLM, model
+API, embedding service, GDC, or PDC.
 
-The fixture is synthetic only: it is **not TCGA data, not CPTAC data, and not an extract from GDC or PDC**. The repository makes no claim of live-source integration, blind evaluation, clinical validity, or regulatory suitability.
+The repository contains a synthetic offline demo plus frozen public metadata
+snapshots. It makes no clinical, causal, patient-reidentification, regulatory,
+blind-evaluation, or release-acceptance claim.
 
-## Run the demo
+## Reproduce the offline demo
 
-From the repository root, in an environment with Python 3.11+:
-
-```powershell
-python scripts/run_demo.py
-```
-
-The command runs entirely offline, evaluates the documented query, writes a certificate and replay report under `artifacts/synthetic-demo/`, and exits only after replay verification prints `CERTIFICATE_VERIFIED`.
-
-For a clean development environment, install the test extra and run the full suite:
+From a clean checkout:
 
 ```powershell
 python -m pip install -e ".[test]"
+python scripts/run_demo.py
+```
+
+The demo produces a `SUPPORTED` result and prints `CERTIFICATE_VERIFIED`.
+The exact verification command for its outputs is:
+
+```powershell
+python -m cancer_evidence verify --snapshot artifacts/verified-demo/snapshot --certificate artifacts/verified-demo/certificate.json
+```
+
+`certificate.py` signs the canonical certificate with Ed25519. `keys/public_key.pem`
+is the published verification key for this repository's demo key pair. The
+matching private key is included only as an explicitly non-production demo key;
+replace it with an externally managed signing key for any real release.
+
+## Query and denominator contract
+
+The supported overlap query is in `examples/overlap.json`. It asks for case
+overlap between two assay selectors. `denominator_mode` may be `left`,
+`eligible`, or `universe`; `eligible` and `universe` require a
+snapshot-derived `cohort_filter`.
+
+For the frozen synthetic snapshot, an eligible-cohort query returns one
+overlapping case out of two eligible TCGA-LUAD fixture cases. The denominator
+is explicitly labeled as `snapshot_eligible_cases`; it is not inferred from
+the IDs in the query.
+
+Missing, incomplete, stale, conflicting, malformed, ambiguous, or unsupported
+inputs produce explicit statuses and reason codes. They are never converted to
+a smaller zero result.
+
+## Certificates and replay
+
+Certificates bind the query result to:
+
+- the raw snapshot SHA-256;
+- the normalized snapshot SHA-256 and raw-to-normalized derivation record;
+- the snapshot manifest hash and rule version; and
+- an Ed25519 signature verified against the fixed published public key.
+
+Replay reconstructs the answer from SQL queries over `data.sqlite`, uses an
+independent evidence/conflict sweep, and does not import or call
+`engine.evaluate`. A normalized-record edit returns `DERIVATION_MISMATCH`.
+Recomputing a content hash after editing a certificate returns
+`SIGNATURE_INVALID`.
+
+Run the independent mutation check with:
+
+```powershell
+python scripts/mutation_check.py
+```
+
+The current report kills four of four deliberate engine mutations.
+
+## Public snapshots
+
+Acquisition is a separate, networked operation. Answer and verify remain
+offline after acquisition.
+
+```powershell
+python scripts/acquire_public_snapshots.py gdc --out snapshots/real/gdc_tcga_luad
+python scripts/acquire_public_snapshots.py pdc --out snapshots/real/pdc_pdc000153
+```
+
+The checked-in snapshots were acquired from public metadata on 2026-11-18:
+
+- GDC `TCGA-LUAD`: 585 cases, three captured pages, complete in the manifest.
+- PDC `PDC000153`: 115 cases, one captured public GraphQL response, complete in
+  the manifest. The response records the study/version metadata used by the
+  adapter.
+
+These are source snapshots, not live counts. Re-run acquisition to obtain a
+newly dated snapshot and inspect its hashes before use.
+
+The namespaces remain separate (`gdc:` and `pdc:`). The engine refuses
+cross-source assay joins, and no GDC-to-PDC identity mapping is included.
+Therefore no patient-overlap claim is made.
+
+## Verification
+
+```powershell
 python -m pytest -q
+python scripts/mutation_check.py
 ```
 
-## Query and fixture
+`PROOF.md` records the commands and outputs for W1–W9. `STATUS.md` records the
+current disposition of each work item. The old fixture-only package was moved
+under `legacy/synthetic_demo/` and is not a runtime product package.
 
-`examples/synthetic_overlap.json` asks for case-level overlap between these two assay-record sets:
+## Limitations
 
-```json
-{
-  "operation": "case_overlap",
-  "fixture_id": "synthetic-case-overlap-v1",
-  "cohort_id": "SYNTHETIC-COHORT-A",
-  "entity_level": "case",
-  "left": ["ASSAY-L-001", "ASSAY-L-002", "ASSAY-L-003"],
-  "right": ["ASSAY-R-001", "ASSAY-R-002"]
-}
-```
-
-The expected supported result is numerator `1`, denominator `2`, and overlap case `CASE-001`. The engine deduplicates at the requested case level, so the two left assay records belonging to `CASE-002` count as one case. Files and source records remain evidence references; they do not inflate the case count.
-
-Missing or incomplete evidence never becomes a zero. The engine returns `UNKNOWN`, `CONFLICT`, `AMBIGUOUS`, `OUT_OF_SCOPE`, or `ERROR` when the available records do not justify a supported result.
-
-## Certificate and replay boundary
-
-`cancer_evidence.certificate.issue_certificate` evaluates the query and binds the result to a canonical fixture SHA-256 hash and rule version `case-overlap-v1`. `cancer_evidence.replay` independently reconstructs the answer from fixture records and does not import or call the production engine. Changing a qualifying record, the fixture hash, the certificate digest, or the cohort result causes replay verification to fail.
-
-## Repository map
-
-```text
-examples/
-  synthetic_fixture.json       synthetic cases, samples, assays, files, sources
-  synthetic_overlap.json       documented case-level query
-scripts/
-  run_demo.py                  one-command offline entry point
-src/cancer_evidence/
-  engine.py                    deterministic production evaluator
-  certificate.py               fixture/rule-bound certificate issuer
-  replay.py                    independent certificate checker
-  demo.py                      demo CLI
-tests/
-  test_synthetic_engine.py     offline acceptance and tamper tests
-```
-
-The older `evidence_engine/` package and its historical tests remain in the repository for continuity; this task's new inspectable demo is the `src/cancer_evidence/` package above.
+- The synthetic fixture is not TCGA or CPTAC data.
+- The frozen GDC/PDC snapshots are public metadata captures, not controlled
+  access data and not a clinical cohort analysis.
+- No authoritative cross-cohort identity mapping is present.
+- Blind external evaluation, clinical review, regulatory review, and release
+  acceptance remain `PENDING_EXTERNAL`.

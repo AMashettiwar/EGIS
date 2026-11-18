@@ -12,6 +12,7 @@ from typing import Any
 
 SCHEMA_VERSION = "1.0.0"
 ADAPTER_VERSION = "synthetic-1.0.0"
+DERIVATION_VERSION = "raw-to-normalized-v1"
 
 
 def canonical_json(value: Any) -> str:
@@ -24,6 +25,17 @@ def sha256_bytes(value: bytes) -> str:
 
 def sha256_json(value: Any) -> str:
     return sha256_bytes(canonical_json(value).encode("utf-8"))
+
+
+def derive_normalized(raw_bundle: dict[str, Any]) -> dict[str, Any]:
+    """Derive the canonical snapshot payload from a raw capture."""
+    return {
+        "source": raw_bundle.get("source"),
+        "coverage": raw_bundle.get("coverage", {}),
+        "entities": raw_bundle.get("entities", []),
+        "relationships": raw_bundle.get("relationships", []),
+        "evidence": raw_bundle.get("evidence", []),
+    }
 
 
 def _init_db(path: Path) -> sqlite3.Connection:
@@ -79,7 +91,17 @@ def write_snapshot(
     if complete and not required.issubset(raw_bundle):
         raise ValueError(f"complete snapshot is missing required sections: {sorted(required - set(raw_bundle))}")
     coverage = raw_bundle.get("coverage", {})
-    coverage_complete = bool(coverage) and all(isinstance(value, dict) and value.get("complete") is True for value in coverage.values())
+    actual_case_counts: dict[str, int] = {}
+    for entity in raw_bundle.get("entities", []):
+        if entity.get("kind") == "case":
+            actual_case_counts[entity.get("source", "")] = actual_case_counts.get(entity.get("source", ""), 0) + 1
+    coverage_complete = bool(coverage) and all(
+        isinstance(value, dict)
+        and value.get("complete") is True
+        and (value.get("expected_total") is None or value.get("expected_total") == actual_case_counts.get(source, 0))
+        and (value.get("retrieved_count") is None or value.get("retrieved_count") == actual_case_counts.get(source, 0))
+        for source, value in coverage.items()
+    )
     effective_complete = complete and coverage_complete
     if not effective_complete:
         publication = "INCOMPLETE"
@@ -87,15 +109,28 @@ def write_snapshot(
         publication = "READY"
     raw_payload = (json.dumps(raw_bundle, indent=2, sort_keys=True) + "\n").encode("utf-8")
     raw_hash = sha256_bytes(raw_payload)
+    normalized = derive_normalized(raw_bundle)
+    normalized_payload = (json.dumps(normalized, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    normalized_hash = sha256_bytes(normalized_payload)
     snapshot_id = f"{source}-{raw_hash[:16]}"
     manifest = {
         "snapshot_id": snapshot_id,
         "source": source,
+        "fixture_id": raw_bundle.get("fixture_id"),
+        "cohort_id": raw_bundle.get("cohort_id"),
         "request": request,
         "retrieved_at_utc": retrieved_at,
         "schema_version": SCHEMA_VERSION,
         "adapter_version": adapter_version,
         "raw_content_sha256": raw_hash,
+        "normalized_content_sha256": normalized_hash,
+        "derivation": {
+            "version": DERIVATION_VERSION,
+            "input": "raw.json",
+            "input_sha256": raw_hash,
+            "output": "normalized.json",
+            "output_sha256": normalized_hash,
+        },
         "coverage": raw_bundle.get("coverage", {}),
         "complete": effective_complete,
         "publication": publication,
@@ -107,9 +142,10 @@ def write_snapshot(
     connection: sqlite3.Connection | None = None
     try:
         (temp / "raw.json").write_bytes(raw_payload)
+        (temp / "normalized.json").write_bytes(normalized_payload)
         connection = _init_db(temp / "data.sqlite")
         entity_keys: set[tuple[str, str, str]] = set()
-        for entity in raw_bundle.get("entities", []):
+        for entity in normalized["entities"]:
             expected_id = f"{entity['source']}:{entity['kind']}:{entity['source_id']}"
             if entity["entity_id"] != expected_id or (entity["source"], entity["kind"], entity["source_id"]) in entity_keys:
                 raise ValueError("entity identity is not a unique source/kind/source_id namespace")
@@ -118,15 +154,15 @@ def write_snapshot(
                 "INSERT INTO entities VALUES (?,?,?,?,?)",
                 (entity["entity_id"], entity["kind"], entity["source"], entity["source_id"], canonical_json(entity.get("attributes", {}))),
             )
-        entity_sources = {row["entity_id"]: row["source"] for row in raw_bundle.get("entities", [])}
-        entity_kinds = {row["entity_id"]: row["kind"] for row in raw_bundle.get("entities", [])}
+        entity_sources = {row["entity_id"]: row["source"] for row in normalized["entities"]}
+        entity_kinds = {row["entity_id"]: row["kind"] for row in normalized["entities"]}
         allowed_predicates = {
             "HAS_SAMPLE": {("case", "sample")},
             "HAS_ALIQUOT": {("case", "aliquot"), ("sample", "aliquot")},
             "HAS_ASSAY": {("case", "assay"), ("sample", "assay"), ("aliquot", "assay")},
             "HAS_FILE": {("assay", "file")},
         }
-        for rel in raw_bundle.get("relationships", []):
+        for rel in normalized["relationships"]:
             subject_source = entity_sources.get(rel["subject_id"])
             object_source = entity_sources.get(rel["object_id"])
             pair = (entity_kinds.get(rel["subject_id"]), entity_kinds.get(rel["object_id"]))
@@ -136,7 +172,7 @@ def write_snapshot(
                 "INSERT INTO relationships VALUES (?,?,?,?,?)",
                 (rel["subject_id"], rel["predicate"], rel["object_id"], rel["source_record_id"], rel["source"]),
             )
-        for evidence in raw_bundle.get("evidence", []):
+        for evidence in normalized["evidence"]:
             connection.execute(
                 "INSERT INTO evidence VALUES (?,?,?,?,?,?)",
                 (evidence["evidence_id"], evidence["entity_id"], evidence["field_name"], canonical_json(evidence.get("raw_value")), canonical_json(evidence.get("canonical_value")), evidence["source_record_id"]),
@@ -175,6 +211,17 @@ def read_snapshot(snapshot_dir: Path) -> tuple[dict[str, Any], sqlite3.Connectio
     raw_path = snapshot_dir / "raw.json"
     if not raw_path.exists() or manifest.get("raw_content_sha256") != sha256_bytes(raw_path.read_bytes()):
         raise ValueError("snapshot raw evidence hash mismatch")
+    normalized_path = snapshot_dir / "normalized.json"
+    if not normalized_path.exists():
+        raise ValueError("snapshot normalized derivation missing")
+    raw_bundle = json.loads(raw_path.read_text(encoding="utf-8"))
+    expected_normalized = derive_normalized(raw_bundle)
+    actual_normalized = json.loads(normalized_path.read_text(encoding="utf-8"))
+    if actual_normalized != expected_normalized:
+        raise ValueError("snapshot derivation mismatch")
+    normalized_hash = sha256_bytes(normalized_path.read_bytes())
+    if manifest.get("normalized_content_sha256") != normalized_hash or manifest.get("derivation", {}).get("output_sha256") != normalized_hash:
+        raise ValueError("snapshot normalized hash mismatch")
     if manifest.get("sqlite_sha256") != sha256_bytes((snapshot_dir / "data.sqlite").read_bytes()):
         raise ValueError("snapshot database hash mismatch")
     return manifest, sqlite3.connect(snapshot_dir / "data.sqlite")

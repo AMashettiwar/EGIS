@@ -1,18 +1,24 @@
 import json
+import os
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-from evidence_engine.certificate import issue_certificate
-from evidence_engine.fixture import create_synthetic_snapshot
+from cancer_evidence.certificate import issue_certificate
+from cancer_evidence.fixture import create_synthetic_snapshot
 
 
 class CliTests(unittest.TestCase):
+    def _env(self):
+        env = dict(os.environ)
+        env["PYTHONPATH"] = str(Path("src").resolve())
+        return env
+
     def test_demo_is_offline_and_emits_replay(self):
         with tempfile.TemporaryDirectory() as directory:
-            result = subprocess.run([sys.executable, "-m", "evidence_engine", "demo", "--out", directory], capture_output=True, text=True, check=True)
+            result = subprocess.run([sys.executable, "-m", "cancer_evidence", "demo", "--out", directory], capture_output=True, text=True, check=True, env=self._env())
             payload = json.loads(result.stdout)
             self.assertEqual(payload["status"], "SUPPORTED")
             self.assertTrue(payload["replay"]["valid"])
@@ -23,7 +29,7 @@ class CliTests(unittest.TestCase):
             snapshot = root / "snapshot"
             export = root / "normalized.json"
             create_synthetic_snapshot(snapshot)
-            subprocess.run([sys.executable, "-m", "evidence_engine", "export", "--snapshot", str(snapshot), "--out", str(export)], check=True, capture_output=True, text=True)
+            subprocess.run([sys.executable, "-m", "cancer_evidence", "export", "--snapshot", str(snapshot), "--out", str(export)], check=True, capture_output=True, text=True, env=self._env())
             payload = json.loads(export.read_text(encoding="utf-8"))
             self.assertTrue(payload["relationships"])
             self.assertTrue(payload["evidence"])
@@ -38,6 +44,6 @@ class CliTests(unittest.TestCase):
             data = json.loads(certificate.read_text(encoding="utf-8"))
             data["result"]["result"]["count"] = 99
             certificate.write_text(json.dumps(data), encoding="utf-8")
-            result = subprocess.run([sys.executable, "-m", "evidence_engine", "verify", "--snapshot", str(snapshot), "--certificate", str(certificate)], capture_output=True, text=True)
+            result = subprocess.run([sys.executable, "-m", "cancer_evidence", "verify", "--snapshot", str(snapshot), "--certificate", str(certificate)], capture_output=True, text=True, env=self._env())
             self.assertNotEqual(result.returncode, 0)
 

@@ -1,6 +1,6 @@
 import unittest
 
-from evidence_engine.fixture import synthetic_bundle
+from cancer_evidence.fixture import synthetic_bundle
 
 
 class NormalizationTests(unittest.TestCase):

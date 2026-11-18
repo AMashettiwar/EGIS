@@ -7,14 +7,14 @@ name = "cancer-evidence-engine"
 version = "0.1.0"
 description = "Non-generative, proof-carrying public cancer metadata queries"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = ["cryptography>=41"]
 
 [project.optional-dependencies]
 test = ["pytest>=8,<9"]
 
 [project.scripts]
-evidence = "evidence_engine.cli:main"
-cancer-evidence-demo = "cancer_evidence.demo:main"
+evidence = "cancer_evidence.cli:main"
+cancer-evidence-demo = "cancer_evidence.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

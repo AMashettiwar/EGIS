@@ -1,8 +1,14 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+artifacts/demo/
 artifacts/gate-demo/
 artifacts/verification-demo/
 artifacts/synthetic-demo/
+artifacts/verified-demo/
+artifacts/audit-demo/
+artifacts/final-audit/
+*.egg-info/
+build/
 *.sqlite-wal
 *.sqlite-shm

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 from pathlib import Path
 
 from .adapters import gdc_request_plan, pdc_request_plan
@@ -18,7 +19,7 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="evidence")
     sub = parser.add_subparsers(dest="command", required=True)
     demo = sub.add_parser("demo")
-    demo.add_argument("--out", type=Path, default=Path("artifacts/demo"))
+    demo.add_argument("--out", type=Path, default=Path("artifacts/verified-demo"))
     snap = sub.add_parser("snapshot")
     snap_sub = snap.add_subparsers(dest="snapshot_command", required=True)
     fetch = snap_sub.add_parser("fetch")
@@ -46,7 +47,12 @@ def main(argv: list[str] | None = None) -> None:
 
     if args.command == "demo":
         snapshot_dir = args.out / "snapshot"
-        create_synthetic_snapshot(snapshot_dir)
+        try:
+            create_synthetic_snapshot(snapshot_dir)
+        except (OSError, ValueError):
+            if snapshot_dir.exists():
+                shutil.rmtree(snapshot_dir)
+            create_synthetic_snapshot(snapshot_dir)
         write_schemas(args.out / "schemas")
         query = {"operation": "assay_overlap", "entity_level": "case", "left": {"source": "gdc", "project_id": "TCGA-LUAD", "assay_type": "rna_expression"}, "right": {"source": "gdc", "project_id": "TCGA-LUAD", "assay_type": "protein_abundance"}, "denominator": "left"}
         query_path = args.out / "overlap.json"
@@ -56,6 +62,8 @@ def main(argv: list[str] | None = None) -> None:
         (args.out / "replay.json").write_text(json.dumps(replay, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         (args.out / "normalized.json").write_text(json.dumps(synthetic_bundle(), indent=2, sort_keys=True) + "\n", encoding="utf-8")
         print(json.dumps({"snapshot": str(snapshot_dir), "status": cert["result"]["status"], "result": cert["result"]["result"], "replay": replay}, indent=2, sort_keys=True))
+        if not replay.get("valid"):
+            raise SystemExit(1)
         return
     if args.command == "snapshot" and args.snapshot_command == "fetch":
         if args.source == "synthetic":

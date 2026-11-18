@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from evidence_engine.cli import main
+from cancer_evidence.cli import main
 
 
 class DemoTests(unittest.TestCase):
