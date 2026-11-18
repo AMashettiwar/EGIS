@@ -3,5 +3,6 @@ __pycache__/
 .pytest_cache/
 artifacts/gate-demo/
 artifacts/verification-demo/
+artifacts/synthetic-demo/
 *.sqlite-wal
 *.sqlite-shm

@@ -1,41 +1,64 @@
-# Cancer Evidence Engine
+# Cancer Evidence Engine — offline synthetic demo
 
-Cancer Evidence Engine is a non-generative, proof-carrying metadata prototype for public TCGA and CPTAC repository metadata. It runs queries only against an explicit frozen snapshot. It does not call an LLM, make patient joins, infer clinical meaning, or make clinical, prognostic, biomarker, or causal claims.
+This repository contains a small, inspectable, non-generative demo of a proof-carrying cancer metadata query. The runnable demo uses only the clearly labeled fixture in `examples/synthetic_fixture.json`.
 
-## Quick start
+The fixture is synthetic only: it is **not TCGA data, not CPTAC data, and not an extract from GDC or PDC**. The repository makes no claim of live-source integration, blind evaluation, clinical validity, or regulatory suitability.
 
-```powershell
-python -m evidence_engine demo --out artifacts/demo
-python -m unittest discover -s tests -v
-```
+## Run the demo
 
-The demo writes a SQLite snapshot, normalized JSON, a query, a certificate, schemas, and a replay report. The synthetic fixture is clearly labeled and is not portal data.
-
-Equivalent interface commands:
+From the repository root, in an environment with Python 3.11+:
 
 ```powershell
-python -m evidence_engine snapshot fetch --source synthetic --out artifacts/snapshot
-python -m evidence_engine snapshot inspect --snapshot artifacts/snapshot
-python -m evidence_engine answer --query examples/overlap.json --snapshot artifacts/snapshot --certificate artifacts/certificate.json
-python -m evidence_engine verify --certificate artifacts/certificate.json --snapshot artifacts/snapshot
+python scripts/run_demo.py
 ```
 
-`--source gdc` and `--source pdc` emit bounded request plans with `PENDING_EXTERNAL`; they do not perform network access. The runtime is offline after snapshot acquisition.
+The command runs entirely offline, evaluates the documented query, writes a certificate and replay report under `artifacts/synthetic-demo/`, and exits only after replay verification prints `CERTIFICATE_VERIFIED`.
 
-## Scope and evidence
+For a clean development environment, install the test extra and run the full suite:
 
-The GDC adapter boundary is based on the official GDC search/retrieval API and data model documentation. GDC documents project, case, and file endpoints, filters, fields, pagination, entities, properties, and typed links. The intended GDC project is `TCGA-LUAD`.
+```powershell
+python -m pip install -e ".[test]"
+python -m pytest -q
+```
 
-For PDC, the documented selection is `PDC000153`, `CPTAC LUAD Discovery Study - Proteome`, version UUID `f1c59a53-ab7c-11e9-9a07-0a80fada099c`, analytical fraction `Proteome`, and experiment type `TMT10`. A real adapter must call the study catalog first and freeze the version UUID; live portal counts are never copied into the synthetic snapshot.
+## Query and fixture
 
-No GDC-to-PDC identity mapping is included. Similar disease labels or identifiers are not an identity join.
+`examples/synthetic_overlap.json` asks for case-level overlap between these two assay-record sets:
 
-## Honest release status
+```json
+{
+  "operation": "case_overlap",
+  "fixture_id": "synthetic-case-overlap-v1",
+  "cohort_id": "SYNTHETIC-COHORT-A",
+  "entity_level": "case",
+  "left": ["ASSAY-L-001", "ASSAY-L-002", "ASSAY-L-003"],
+  "right": ["ASSAY-R-001", "ASSAY-R-002"]
+}
+```
 
-- Offline synthetic implementation: development path implemented and covered by the public tests.
-- Real GDC/PDC acquisition: `PENDING_EXTERNAL`; no network snapshot, completeness proof, or current totals are claimed here.
-- Independent held-out evaluator: `PENDING_EXTERNAL`; the runner exists, but expected inputs and scoring remain outside this repository.
-- Clinical or regulatory use: out of scope.
+The expected supported result is numerator `1`, denominator `2`, and overlap case `CASE-001`. The engine deduplicates at the requested case level, so the two left assay records belonging to `CASE-002` count as one case. Files and source records remain evidence references; they do not inflate the case count.
 
-See [GATES.md](GATES.md), [PLAN.md](PLAN.md), [docs/evidence-report.md](docs/evidence-report.md), and the seven [handoffs](handoffs/).
+Missing or incomplete evidence never becomes a zero. The engine returns `UNKNOWN`, `CONFLICT`, `AMBIGUOUS`, `OUT_OF_SCOPE`, or `ERROR` when the available records do not justify a supported result.
 
+## Certificate and replay boundary
+
+`cancer_evidence.certificate.issue_certificate` evaluates the query and binds the result to a canonical fixture SHA-256 hash and rule version `case-overlap-v1`. `cancer_evidence.replay` independently reconstructs the answer from fixture records and does not import or call the production engine. Changing a qualifying record, the fixture hash, the certificate digest, or the cohort result causes replay verification to fail.
+
+## Repository map
+
+```text
+examples/
+  synthetic_fixture.json       synthetic cases, samples, assays, files, sources
+  synthetic_overlap.json       documented case-level query
+scripts/
+  run_demo.py                  one-command offline entry point
+src/cancer_evidence/
+  engine.py                    deterministic production evaluator
+  certificate.py               fixture/rule-bound certificate issuer
+  replay.py                    independent certificate checker
+  demo.py                      demo CLI
+tests/
+  test_synthetic_engine.py     offline acceptance and tamper tests
+```
+
+The older `evidence_engine/` package and its historical tests remain in the repository for continuity; this task's new inspectable demo is the `src/cancer_evidence/` package above.

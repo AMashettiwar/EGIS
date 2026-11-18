@@ -1,0 +1,54 @@
+{
+  "fixture_metadata": {
+    "fixture_id": "synthetic-case-overlap-v1",
+    "cohort_id": "SYNTHETIC-COHORT-A",
+    "synthetic_only": true,
+    "complete": true,
+    "label": "SYNTHETIC ONLY - NOT TCGA - NOT CPTAC",
+    "description": "Offline demo records. These are not portal records and must not be reported as TCGA or CPTAC data."
+  },
+  "cases": [
+    {"record_type": "case", "case_id": "CASE-001", "display_name": "Synthetic case one", "sample_ids": ["SAMPLE-001-A", "SAMPLE-001-B"], "source_record_id": "SRC-CASE-001"},
+    {"record_type": "case", "case_id": "CASE-002", "display_name": "Synthetic case two", "sample_ids": ["SAMPLE-002-A"], "source_record_id": "SRC-CASE-002"},
+    {"record_type": "case", "case_id": "CASE-003", "display_name": "Synthetic case three", "sample_ids": ["SAMPLE-003-A"], "source_record_id": "SRC-CASE-003"}
+  ],
+  "samples": [
+    {"record_type": "sample", "sample_id": "SAMPLE-001-A", "case_id": "CASE-001", "sample_type": "tumor", "source_record_id": "SRC-SAMPLE-001-A"},
+    {"record_type": "sample", "sample_id": "SAMPLE-001-B", "case_id": "CASE-001", "sample_type": "tumor", "source_record_id": "SRC-SAMPLE-001-B"},
+    {"record_type": "sample", "sample_id": "SAMPLE-002-A", "case_id": "CASE-002", "sample_type": "tumor", "source_record_id": "SRC-SAMPLE-002-A"},
+    {"record_type": "sample", "sample_id": "SAMPLE-003-A", "case_id": "CASE-003", "sample_type": "tumor", "source_record_id": "SRC-SAMPLE-003-A"}
+  ],
+  "assay_records": [
+    {"record_type": "assay-record", "assay_record_id": "ASSAY-L-001", "set_name": "left", "case_id": "CASE-001", "sample_id": "SAMPLE-001-A", "assay_name": "RNA-like synthetic assay", "source_record_id": "SRC-ASSAY-L-001"},
+    {"record_type": "assay-record", "assay_record_id": "ASSAY-L-002", "set_name": "left", "case_id": "CASE-002", "sample_id": "SAMPLE-002-A", "assay_name": "RNA-like synthetic assay", "source_record_id": "SRC-ASSAY-L-002"},
+    {"record_type": "assay-record", "assay_record_id": "ASSAY-L-003", "set_name": "left", "case_id": "CASE-002", "sample_id": "SAMPLE-002-A", "assay_name": "RNA-like synthetic assay", "source_record_id": "SRC-ASSAY-L-003"},
+    {"record_type": "assay-record", "assay_record_id": "ASSAY-R-001", "set_name": "right", "case_id": "CASE-001", "sample_id": "SAMPLE-001-B", "assay_name": "Protein-like synthetic assay", "source_record_id": "SRC-ASSAY-R-001"},
+    {"record_type": "assay-record", "assay_record_id": "ASSAY-R-002", "set_name": "right", "case_id": "CASE-003", "sample_id": "SAMPLE-003-A", "assay_name": "Protein-like synthetic assay", "source_record_id": "SRC-ASSAY-R-002"}
+  ],
+  "files": [
+    {"record_type": "file", "file_id": "FILE-L-001", "assay_record_id": "ASSAY-L-001", "source_record_id": "SRC-FILE-L-001"},
+    {"record_type": "file", "file_id": "FILE-L-002", "assay_record_id": "ASSAY-L-002", "source_record_id": "SRC-FILE-L-002"},
+    {"record_type": "file", "file_id": "FILE-L-003", "assay_record_id": "ASSAY-L-003", "source_record_id": "SRC-FILE-L-003"},
+    {"record_type": "file", "file_id": "FILE-R-001", "assay_record_id": "ASSAY-R-001", "source_record_id": "SRC-FILE-R-001"},
+    {"record_type": "file", "file_id": "FILE-R-002", "assay_record_id": "ASSAY-R-002", "source_record_id": "SRC-FILE-R-002"}
+  ],
+  "source_records": [
+    {"record_type": "source-record", "source_record_id": "SRC-CASE-001", "entity_id": "CASE-001", "field": "case_id", "value": "CASE-001"},
+    {"record_type": "source-record", "source_record_id": "SRC-CASE-002", "entity_id": "CASE-002", "field": "case_id", "value": "CASE-002"},
+    {"record_type": "source-record", "source_record_id": "SRC-CASE-003", "entity_id": "CASE-003", "field": "case_id", "value": "CASE-003"},
+    {"record_type": "source-record", "source_record_id": "SRC-SAMPLE-001-A", "entity_id": "SAMPLE-001-A", "field": "case_id", "value": "CASE-001"},
+    {"record_type": "source-record", "source_record_id": "SRC-SAMPLE-001-B", "entity_id": "SAMPLE-001-B", "field": "case_id", "value": "CASE-001"},
+    {"record_type": "source-record", "source_record_id": "SRC-SAMPLE-002-A", "entity_id": "SAMPLE-002-A", "field": "case_id", "value": "CASE-002"},
+    {"record_type": "source-record", "source_record_id": "SRC-SAMPLE-003-A", "entity_id": "SAMPLE-003-A", "field": "case_id", "value": "CASE-003"},
+    {"record_type": "source-record", "source_record_id": "SRC-ASSAY-L-001", "entity_id": "ASSAY-L-001", "field": "sample_id", "value": "SAMPLE-001-A"},
+    {"record_type": "source-record", "source_record_id": "SRC-ASSAY-L-002", "entity_id": "ASSAY-L-002", "field": "sample_id", "value": "SAMPLE-002-A"},
+    {"record_type": "source-record", "source_record_id": "SRC-ASSAY-L-003", "entity_id": "ASSAY-L-003", "field": "sample_id", "value": "SAMPLE-002-A"},
+    {"record_type": "source-record", "source_record_id": "SRC-ASSAY-R-001", "entity_id": "ASSAY-R-001", "field": "sample_id", "value": "SAMPLE-001-B"},
+    {"record_type": "source-record", "source_record_id": "SRC-ASSAY-R-002", "entity_id": "ASSAY-R-002", "field": "sample_id", "value": "SAMPLE-003-A"},
+    {"record_type": "source-record", "source_record_id": "SRC-FILE-L-001", "entity_id": "FILE-L-001", "field": "assay_record_id", "value": "ASSAY-L-001"},
+    {"record_type": "source-record", "source_record_id": "SRC-FILE-L-002", "entity_id": "FILE-L-002", "field": "assay_record_id", "value": "ASSAY-L-002"},
+    {"record_type": "source-record", "source_record_id": "SRC-FILE-L-003", "entity_id": "FILE-L-003", "field": "assay_record_id", "value": "ASSAY-L-003"},
+    {"record_type": "source-record", "source_record_id": "SRC-FILE-R-001", "entity_id": "FILE-R-001", "field": "assay_record_id", "value": "ASSAY-R-001"},
+    {"record_type": "source-record", "source_record_id": "SRC-FILE-R-002", "entity_id": "FILE-R-002", "field": "assay_record_id", "value": "ASSAY-R-002"}
+  ]
+}

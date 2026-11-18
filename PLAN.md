@@ -26,6 +26,10 @@ Shared conventions:
 
 Each leaf owns its listed files. The root owns integration, final gate reruns, and conflict resolution. No leaf may add a dependency or alter the shared status taxonomy without recording it here first.
 
+## Current requested deliverable
+
+The new inspectable offline demo is a separate package under `src/cancer_evidence/`. It uses only `examples/synthetic_fixture.json` and `examples/synthetic_overlap.json`; it must never call GDC/PDC. Its production engine and replay checker are separate modules with no production-engine import in replay. The legacy `evidence_engine/` package remains untouched by this leaf.
+
 ## Status log
 
 | Leaf | Owner | Status | Evidence |

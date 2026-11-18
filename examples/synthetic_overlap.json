@@ -1,0 +1,8 @@
+{
+  "operation": "case_overlap",
+  "fixture_id": "synthetic-case-overlap-v1",
+  "cohort_id": "SYNTHETIC-COHORT-A",
+  "entity_level": "case",
+  "left": ["ASSAY-L-001", "ASSAY-L-002", "ASSAY-L-003"],
+  "right": ["ASSAY-R-001", "ASSAY-R-002"]
+}

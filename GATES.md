@@ -63,4 +63,19 @@ Scope: a runnable, offline-first, proof-carrying metadata engine with synthetic 
 - [x] G13: The repository documents the exact offline demo command and distinguishes synthetic evidence from real-source and held-out evaluation status.
   EVIDENCE: README.md documents `python -m evidence_engine demo --out artifacts/demo`; docs/evidence-report.md marks real GDC/PDC snapshots and held-out evaluation PENDING_EXTERNAL.
 
+- [x] G14: The required `src/cancer_evidence/`, `tests/`, `examples/`, and packaging metadata exist for the inspectable offline demo.
+  CHECK: python -c "from pathlib import Path; required=['README.md','pyproject.toml','src/cancer_evidence/__init__.py','tests/test_synthetic_engine.py','examples/synthetic_fixture.json','examples/synthetic_overlap.json']; assert all(Path(p).exists() for p in required); print('required offline demo files passed')"
+  EXPECT: required offline demo files passed
+  EVIDENCE: required offline demo files passed
+
+- [x] G15: The documented synthetic demo runs offline and verifies a certificate bound to the fixture hash and rule version.
+  CHECK: python scripts/run_demo.py
+  EXPECT: CERTIFICATE_VERIFIED
+  EVIDENCE: CERTIFICATE_VERIFIED | {"denominator": 2, "numerator": 1, "output_dir": "artifacts\\synthetic-demo", "status": "SUPPORTED"}
+
+- [x] G16: The synthetic acceptance tests cover correct overlap, deduplication, entity-level confusion, missing/conflicting evidence, stale fixture hash, altered certificate, and wrong-cohort arithmetic.
+  CHECK: python -c "import sys,unittest; sys.path.insert(0,'src'); suite=unittest.defaultTestLoader.discover('tests', pattern='test_synthetic_engine.py'); result=unittest.TextTestRunner(verbosity=2).run(suite); raise SystemExit(not result.wasSuccessful())"
+  EXPECT: OK
+  EVIDENCE: 11 tests, OK. The full pytest command was also run with the installed Python 3.11 interpreter: 45 passed.
+
 <!-- Every checked gate must have actual evidence. If a gate is impossible, add ABANDON: <gate> <reason> instead of silently dropping it. -->

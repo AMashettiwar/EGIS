@@ -14,7 +14,15 @@ test = ["pytest>=8,<9"]
 
 [project.scripts]
 evidence = "evidence_engine.cli:main"
+cancer-evidence-demo = "cancer_evidence.demo:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 
