@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+artifacts/gate-demo/
+artifacts/verification-demo/
+*.sqlite-wal
+*.sqlite-shm

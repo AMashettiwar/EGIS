@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cancer-evidence-engine"
+version = "0.1.0"
+description = "Non-generative, proof-carrying public cancer metadata queries"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["pytest>=8,<9"]
+
+[project.scripts]
+evidence = "evidence_engine.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+

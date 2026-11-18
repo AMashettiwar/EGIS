@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "certificate_sha256": {
+      "type": "string"
+    },
+    "certificate_version": {
+      "type": "string"
+    },
+    "query": {
+      "type": "object"
+    },
+    "result": {
+      "type": "object"
+    },
+    "snapshot_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "certificate_version",
+    "snapshot_id",
+    "query",
+    "result",
+    "certificate_sha256"
+  ],
+  "type": "object"
+}

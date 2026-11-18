@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Structured evidence query",
+  "type": "object",
+  "required": ["operation"],
+  "properties": {
+    "operation": {"enum": ["count_entities", "assay_availability", "assay_overlap", "file_lineage", "compare_inventories"]},
+    "entity_level": {"enum": ["case", "sample", "aliquot", "assay", "file"]}
+  },
+  "additionalProperties": true
+}

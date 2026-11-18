@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Proof-carrying answer certificate",
+  "type": "object",
+  "required": ["certificate_version", "engine", "rule_version", "query", "query_sha256", "snapshot_id", "snapshot_manifest_sha256", "evidence_scope", "result", "certificate_sha256"],
+  "properties": {
+    "certificate_version": {"type": "string"},
+    "engine": {"const": "cancer-evidence-engine"},
+    "rule_version": {"type": "string"},
+    "query": {"type": "object"},
+    "query_sha256": {"type": "string"},
+    "snapshot_id": {"type": "string"},
+    "snapshot_manifest_sha256": {"type": "string"},
+    "evidence_scope": {"type": "object"},
+    "result": {"type": "object"},
+    "certificate_sha256": {"type": "string"}
+  },
+  "additionalProperties": true
+}

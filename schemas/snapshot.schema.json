@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Frozen snapshot manifest",
+  "type": "object",
+  "required": ["snapshot_id", "source", "schema_version", "adapter_version", "raw_content_sha256", "complete", "publication"],
+  "properties": {
+    "snapshot_id": {"type": "string"},
+    "source": {"type": "string"},
+    "schema_version": {"type": "string"},
+    "adapter_version": {"type": "string"},
+    "raw_content_sha256": {"type": "string"},
+    "complete": {"type": "boolean"},
+    "publication": {"enum": ["READY", "INCOMPLETE"]}
+  }
+}

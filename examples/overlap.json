@@ -1,0 +1,15 @@
+{
+  "operation": "assay_overlap",
+  "entity_level": "case",
+  "left": {
+    "source": "gdc",
+    "project_id": "TCGA-LUAD",
+    "assay_type": "rna_expression"
+  },
+  "right": {
+    "source": "gdc",
+    "project_id": "TCGA-LUAD",
+    "assay_type": "protein_abundance"
+  },
+  "denominator": "left"
+}

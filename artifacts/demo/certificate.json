@@ -1,0 +1,70 @@
+{
+  "certificate_sha256": "7aa0e1b291dba13b82380427ab16924af78989dd401512bafd30de4b4cb4c9f8",
+  "certificate_version": "1.0.0",
+  "engine": "cancer-evidence-engine",
+  "evidence_scope": {
+    "coverage": {
+      "gdc": {
+        "complete": true,
+        "scope": "TCGA-LUAD fixture"
+      },
+      "pdc": {
+        "complete": true,
+        "scope": "PDC000153 fixture"
+      }
+    },
+    "source": "synthetic"
+  },
+  "limitations": [
+    "Metadata only; no clinical, prognostic, biomarker, causal, or patient-identity claim."
+  ],
+  "query": {
+    "denominator": "left",
+    "entity_level": "case",
+    "left": {
+      "assay_type": "rna_expression",
+      "project_id": "TCGA-LUAD",
+      "source": "gdc"
+    },
+    "operation": "assay_overlap",
+    "right": {
+      "assay_type": "protein_abundance",
+      "project_id": "TCGA-LUAD",
+      "source": "gdc"
+    }
+  },
+  "query_sha256": "50a25a2fabd977ae163a9de0df94a5db7cf7ce9da1616d3864a500e2648f0e66",
+  "result": {
+    "evidence_refs": [
+      "ev:gdc:assay:A001:assay_type",
+      "ev:gdc:assay:A001:eligible",
+      "ev:gdc:assay:A002:assay_type",
+      "ev:gdc:assay:A002:eligible",
+      "ev:gdc:assay:A003:assay_type",
+      "ev:gdc:assay:A003:eligible",
+      "ev:gdc:case:C001:disease",
+      "ev:gdc:case:C001:project_id",
+      "rel:A001-F001",
+      "rel:A002-F002",
+      "rel:A003-F003",
+      "rel:C001-A001",
+      "rel:C001-A002",
+      "rel:C001-S001",
+      "rel:C002-A003"
+    ],
+    "reason_code": "NONE",
+    "result": {
+      "denominator": 1,
+      "entity_level": "case",
+      "numerator": 1,
+      "percentage": 100.0
+    },
+    "status": "SUPPORTED",
+    "witness": [
+      "gdc:case:C001"
+    ]
+  },
+  "rule_version": "rules-1.0.0",
+  "snapshot_id": "synthetic-e2aa5e938edf49e6",
+  "snapshot_manifest_sha256": "628180fe3c3fef79ab9f0c61eebae5f653c3ba2f2660fde4e03fb8499ed9faf1"
+}

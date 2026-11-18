@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Answer result",
+  "type": "object",
+  "required": ["status", "reason_code", "result", "witness", "evidence_refs"],
+  "properties": {
+    "status": {"type": "string"},
+    "reason_code": {"type": "string"},
+    "result": {"type": "object"},
+    "witness": {"type": "array"},
+    "evidence_refs": {"type": "array"}
+  }
+}
