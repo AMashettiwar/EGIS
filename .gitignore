@@ -23,3 +23,9 @@ artifacts/regression-exam-grading-v2-post-gdc-v3/
 build/
 *.sqlite-wal
 *.sqlite-shm
+*.duckdb
+*.duckdb.wal
+snapshots/multimodal/*/raw/
+snapshots/multimodal/*/*.parquet
+snapshots/multimodal/*/slides/
+artifacts/multimodal-demo/

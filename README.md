@@ -29,6 +29,16 @@ is the published verification key for this repository's demo key pair. The
 matching private key is included only as an explicitly non-production demo key;
 replace it with an externally managed signing key for any real release.
 
+## Multimodal Cross-Silo Umbrella (CPTAC-3 Lung: NCI GDC + NCI PDC)
+
+EGIS also includes a lean, DuckDB + Parquet multimodal unification engine (`src/cancer_evidence/multimodal/`) built to unify siloed departmental modalities under one zero-LLM deterministic roof:
+
+- **Real cross-silo Lung Cancer validation:** Unifies **NCI GDC (`CPTAC-3` Lung: Clinical + Open RNA-Seq TPM + Open WXS Mutations)** and **NCI PDC (`PDC000153`: Quantitative Mass-Spec Proteomics)** across overlapping patients (`343` raw records -> `4` lab control pools auto-excluded -> `230` LUAD patients -> `80` verified 4-modality `READY` packets, `2` `SAMPLE_TYPE_MISMATCH` catches, zero silent timestamp guessing).
+- **Temporal & Episode Alignment Gate:** Refuses to silently fuse mismatched timepoints or Tumor-vs-Normal specimens.
+- **Pluggable Modality & Vision Adapters:** Supports local CPU `CLIP` / `PLIP` (`ClipPlipSlideEncoder`) and GPU `bioptimus/H-optimus-0` (`HOptimus0SlideEncoder` + free Google Colab T4 notebook at `notebooks/extract_h_optimus_0_colab.ipynb`).
+
+See [`docs/MULTIMODAL_DEMO_GUIDE.md`](docs/MULTIMODAL_DEMO_GUIDE.md) for the 10-minute walkthrough and exact commands.
+
 ## Human-verifier demo UI (offline & read-only)
 
 To inspect the real `TCGA-LUAD` GDC v3 workflow (`40 / 571` observed selected

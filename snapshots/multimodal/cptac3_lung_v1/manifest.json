@@ -1,0 +1,121 @@
+{
+  "created_at": "2026-11-20T20:50:38.351308+00:00",
+  "is_frozen": true,
+  "manifest_sha256": "1ffcdf040c30e5c0c26bccc35ddffac951a2cd6198c72fa18a0d296802586b0c",
+  "modalities": [
+    "clinical",
+    "proteomics",
+    "rna",
+    "somatic_mutations"
+  ],
+  "schema_version": "multimodal-1.0.0",
+  "snapshot_id": "cptac3-lung-multimodal-v1",
+  "source_provenance": {
+    "gdc:clinical": {
+      "endpoint": "https://api.gdc.cancer.gov/cases",
+      "primary_site": "Bronchus and lung",
+      "project_id": "CPTAC-3",
+      "retrieved_cases": 339
+    },
+    "gdc:rna": {
+      "endpoint": "https://api.gdc.cancer.gov/files + /data",
+      "files_parsed": 82,
+      "gene_panel": [
+        "TACSTD2",
+        "ERBB2",
+        "MET",
+        "ERBB3",
+        "EGFR",
+        "CD276",
+        "CEACAM5",
+        "NECTIN4",
+        "FOLR1",
+        "MUC1",
+        "KRAS",
+        "TP53",
+        "STK11",
+        "KEAP1",
+        "MKI67",
+        "TOP1"
+      ]
+    },
+    "gdc:somatic_mutations": {
+      "endpoint": "https://api.gdc.cancer.gov/ssm_occurrences + /files (Masked Somatic Mutation)",
+      "maf_samples": 338,
+      "panel_ssm_occurrences": 559
+    },
+    "pdc:proteomics": {
+      "control_entries_detected": 4,
+      "endpoint": "https://pdc.cancer.gov/graphql",
+      "matrix_total_genes": 11029,
+      "panel_genes_quantified_in_matrix": [
+        "CD276",
+        "CEACAM5",
+        "EGFR",
+        "ERBB2",
+        "ERBB3",
+        "FOLR1",
+        "KEAP1",
+        "KRAS",
+        "MET",
+        "MKI67",
+        "MUC1",
+        "NECTIN4",
+        "STK11",
+        "TACSTD2",
+        "TOP1",
+        "TP53"
+      ],
+      "pdc_study_id": "PDC000153",
+      "total_pdc_case_entries": 115
+    }
+  },
+  "sources": [
+    "gdc",
+    "pdc"
+  ],
+  "tables": {
+    "feature_proteomics": {
+      "file": "feature_proteomics.parquet",
+      "kind": "feature",
+      "row_count": 3376,
+      "sha256": "0c82cbf8bfb0cec6efd47529a18f28eaf0ae49a2d552f1ac0504c7d6aef76275"
+    },
+    "feature_rna_expression": {
+      "file": "feature_rna_expression.parquet",
+      "kind": "feature",
+      "row_count": 1312,
+      "sha256": "5820251eb7b06c2148df3d718bea50cb4cda1e514b20e22c9620babc2dfcd491"
+    },
+    "feature_somatic_mutations": {
+      "file": "feature_somatic_mutations.parquet",
+      "kind": "feature",
+      "row_count": 559,
+      "sha256": "74f79e010071e5bb73fa3be39d71206100da908797cb60151c07b3920fd23e25"
+    },
+    "identity_crosswalk": {
+      "file": "identity_crosswalk.parquet",
+      "kind": "core",
+      "row_count": 450,
+      "sha256": "43e805cab7bcc49354da3367cdd8da0eb5941ce6811d5512796a7af35b2da55a"
+    },
+    "modality_runs": {
+      "file": "modality_runs.parquet",
+      "kind": "core",
+      "row_count": 2369,
+      "sha256": "be258ede9a59b8b79d8562234cbe435eb4699f4559588ab99707d29a4fdb87cf"
+    },
+    "patients": {
+      "file": "patients.parquet",
+      "kind": "core",
+      "row_count": 343,
+      "sha256": "a311d7926b55820408d1d57bb81ac4526e0e4223b2645df87535b00299e17517"
+    },
+    "specimens": {
+      "file": "specimens.parquet",
+      "kind": "core",
+      "row_count": 1952,
+      "sha256": "5831692f68d14719ac2ff9dabdf0a55d081157d3c4f41e33dedeba862186c316"
+    }
+  }
+}
