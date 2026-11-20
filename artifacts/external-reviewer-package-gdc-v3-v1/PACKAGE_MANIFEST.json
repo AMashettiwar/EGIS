@@ -1,0 +1,36 @@
+{
+  "generated_at_utc": "2026-11-19T00:39:40+00:00",
+  "git_head_commit": "658c77483e91c3cd6c9d0df355dd9de7aaffdfb9",
+  "independent_external_audit": false,
+  "package_files_sha256": {
+    "REVIEWER_CHECKLIST.md": "61fb3ea6405c8f886010e79e1945b8baf6169fd7fbaf6565f0f187b624966149",
+    "abstaining_negative_certificate.json": "5cb8446f381ed3d5c215d9cee25d53e3995a61d80125eac10b91ce66089fae02",
+    "abstaining_negative_query.json": "f07a0a573c678c0bd587989c782c147c06665e33611759bf75e9b967fddf6e5e",
+    "abstaining_negative_replay.json": "8665bf2446bbaa1df82accd8538561066c41f1ed10446adf3032051a48690c02",
+    "abstaining_negative_result.json": "50a6e63378fa7f63ea510f3501783b1a0f8a15b023c89e8a6deb00bceff46eb8",
+    "abstaining_unacquired_gene_certificate.json": "b20e8b1c3ef280ec18ced5ffadd63cb246de44bfd0dae86c1cb7e549c2daf5e3",
+    "abstaining_unacquired_gene_query.json": "d7d2163f8df87c482da6c44d7e7a9cec17cf81a374ff9d4f0e76efac387a2abe",
+    "abstaining_unacquired_gene_replay.json": "8665bf2446bbaa1df82accd8538561066c41f1ed10446adf3032051a48690c02",
+    "abstaining_unacquired_gene_result.json": "50a6e63378fa7f63ea510f3501783b1a0f8a15b023c89e8a6deb00bceff46eb8",
+    "independent_recheck_gdc_v3.py": "4d67ea1b99467176772ed514bde40af55db5b8247c18169a03d5c773eca34812",
+    "independent_recheck_report.json": "448eb8d854e68e7408dd0e9901edc99bf3de67fa5a227f4a2d953308d7e94bec",
+    "supported_certificate.json": "1a02ae70579767458a1a6e632821d6130d05fee92c7de824af68e1c6c8c03897",
+    "supported_query.json": "8cb78057ab11c85bde941f6659dff50be5e2275f604c23d4465b0a5064c400f4",
+    "supported_replay.json": "9739a35fa27aadd831c9723b5d8351960315400c2ee4900528295c4eb072ee93",
+    "supported_result.json": "5c1bc65a738808e6e316beca71d56f4c27726ffbeac39fe0d39b28d55022b8cb"
+  },
+  "package_role": "developer_prepared_external_reviewer_package",
+  "package_version": "1.0.0",
+  "public_key": {
+    "path": "keys/public_key.pem",
+    "sha256": "0cbc076591b360ac6c2ca2156467c4858a95a5ecab7f6b128c2c834045e0ba32"
+  },
+  "snapshot_dir": "snapshots/real/gdc_tcga_luad_v3",
+  "snapshot_hashes": {
+    "snapshots/real/gdc_tcga_luad_v3/READY": "3dfa3fb239f56c778a1e9b33eb31328349edd155a95806dac4378904e88527e5",
+    "snapshots/real/gdc_tcga_luad_v3/data.sqlite": "b56a15ca9ae42accff15258262fbf49fbc5ce7ffce5cbfc4f43349dc5e564b48",
+    "snapshots/real/gdc_tcga_luad_v3/manifest.json": "26a5f547e0ddb15569a12ae8d212622fd5910f4fa4b9731dc2c8ed0ffb0b8339",
+    "snapshots/real/gdc_tcga_luad_v3/normalized.json": "57ea7cf8f33afc6c2361eb92f7a795b622548ea15c7c0c3a534c54f99a02eb49",
+    "snapshots/real/gdc_tcga_luad_v3/raw.json": "8d5ccf3bc2893baaf5cfb5b01a374dd34c27601b5093b5e1368174f1232896c9"
+  }
+}

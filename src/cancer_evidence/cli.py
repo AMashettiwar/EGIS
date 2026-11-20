@@ -12,7 +12,8 @@ from .evaluator import run_hidden
 from .fixture import create_synthetic_snapshot, synthetic_bundle
 from .replay import replay_certificate
 from .schema import write_schemas
-from .snapshot import read_snapshot
+from .snapshot import read_snapshot, write_snapshot
+from .verifier_ui import build_verifier_site, serve_verifier_ui
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -29,6 +30,12 @@ def main(argv: list[str] | None = None) -> None:
     fetch.add_argument("--out", type=Path, default=Path("artifacts/snapshot"))
     inspect = snap_sub.add_parser("inspect")
     inspect.add_argument("--snapshot", type=Path, required=True)
+    snap_import = snap_sub.add_parser("import")
+    snap_import.add_argument("--bundle", type=Path, required=True)
+    snap_import.add_argument("--out", type=Path, required=True)
+    snap_import.add_argument("--source", type=str, default=None)
+    snap_import.add_argument("--retrieved-at", type=str, default=None)
+    snap_import.add_argument("--incomplete", action="store_true")
     answer = sub.add_parser("answer")
     answer.add_argument("--query", type=Path, required=True)
     answer.add_argument("--snapshot", type=Path, required=True)
@@ -43,6 +50,11 @@ def main(argv: list[str] | None = None) -> None:
     evaluate_cmd.add_argument("--snapshot", type=Path, required=True)
     evaluate_cmd.add_argument("--queries", type=Path, required=True)
     evaluate_cmd.add_argument("--out", type=Path, required=True)
+    v_ui = sub.add_parser("verifier-ui")
+    v_ui.add_argument("--out", type=Path, default=Path("artifacts/human-verifier-ui"))
+    v_ui.add_argument("--serve", action="store_true")
+    v_ui.add_argument("--host", default="127.0.0.1")
+    v_ui.add_argument("--port", type=int, default=8765)
     args = parser.parse_args(argv)
 
     if args.command == "demo":
@@ -83,6 +95,22 @@ def main(argv: list[str] | None = None) -> None:
             connection.close()
         print(json.dumps({"manifest": manifest, "entity_counts": counts}, indent=2, sort_keys=True))
         return
+    if args.command == "snapshot" and args.snapshot_command == "import":
+        bundle = json.loads(args.bundle.read_text(encoding="utf-8"))
+        source = args.source or bundle.get("source") or "imported"
+        complete = False if args.incomplete else bool(bundle.get("complete", True))
+        retrieved_at = args.retrieved_at or bundle.get("retrieved_at_utc")
+        manifest = write_snapshot(
+            bundle,
+            args.out,
+            source=source,
+            request=bundle.get("request") or {"kind": "snapshot_import"},
+            retrieved_at=retrieved_at,
+            complete=complete,
+            adapter_version=bundle.get("adapter_version", "snapshot-import-1.0.0"),
+        )
+        print(json.dumps(manifest, indent=2, sort_keys=True))
+        return
     if args.command == "answer":
         query = json.loads(args.query.read_text(encoding="utf-8"))
         issue_certificate(args.snapshot, query, args.certificate)
@@ -107,4 +135,12 @@ def main(argv: list[str] | None = None) -> None:
         return
     if args.command == "evaluate-hidden":
         print(json.dumps(run_hidden(args.snapshot, args.queries, args.out), indent=2, sort_keys=True))
+        return
+    if args.command == "verifier-ui":
+        if args.serve:
+            serve_verifier_ui(host=args.host, port=args.port, output_dir=args.out)
+        else:
+            paths = build_verifier_site(args.out)
+            print(json.dumps({k: str(v) for k, v in paths.items()}, indent=2, sort_keys=True))
+        return
 

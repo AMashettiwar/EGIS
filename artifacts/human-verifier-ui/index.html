@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline';">
+  <title>EGIS Human-Verifier Demo — gdc-8d5ccf3bc2893baa</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #475569;
+      --warn-bg: #fef3c7;
+      --warn-border: #d97706;
+      --warn-text: #78350f;
+      --ok-bg: #ccfbf1;
+      --ok-text: #115e59;
+      --derived-bg: #e0e7ff;
+      --derived-text: #3730a3;
+      --interp-bg: #f1f5f9;
+      --interp-text: #334155;
+      --unk-bg: #ffe4e6;
+      --unk-border: #e11d48;
+      --unk-text: #881337;
+      --accent: #0f766e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .top-banner {
+      background: var(--warn-bg);
+      color: var(--warn-text);
+      border-bottom: 3px solid var(--warn-border);
+      padding: 0.75rem 1.25rem;
+      font-weight: 700;
+      text-align: center;
+      font-size: 0.95rem;
+    }
+    header, main, footer {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.25rem;
+    }
+    header {
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      margin-top: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    h1 { margin: 0 0 0.35rem 0; font-size: 1.5rem; }
+    h2 { margin: 0 0 0.75rem 0; font-size: 1.2rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.35rem; }
+    h3 { margin: 0 0 0.5rem 0; font-size: 1.02rem; }
+    p { margin: 0.4rem 0; }
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-top: 1.25rem;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.85em;
+      background: #f1f5f9;
+      padding: 0.1rem 0.3rem;
+      border-radius: 4px;
+      word-break: break-all;
+    }
+    pre {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 0.85rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      margin: 0.5rem 0;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.9rem;
+      background: #ffffff;
+    }
+    .headline-box {
+      border: 2px solid var(--accent);
+      background: #f0fdfa;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .headline-fraction {
+      font-size: 2.15rem;
+      font-weight: 800;
+      color: var(--ok-text);
+      line-height: 1.15;
+    }
+    .headline-label {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 0.25rem;
+    }
+    .metric-sub-card {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.75rem;
+      background: #f8fafc;
+    }
+    .var-name { font-weight: 700; font-size: 1.05rem; margin-top: 0.25rem; }
+    .var-val { font-size: 1.35rem; font-weight: 700; color: var(--derived-text); }
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+    }
+    .badge-source { background: var(--ok-bg); color: var(--ok-text); }
+    .badge-derived { background: var(--derived-bg); color: var(--derived-text); }
+    .badge-interp { background: var(--interp-bg); color: var(--interp-text); border: 1px solid var(--border); }
+    .badge-warn { background: var(--warn-bg); color: var(--warn-text); border: 1px solid var(--warn-border); }
+    .callout-unknown {
+      border-left: 4px solid var(--unk-border);
+      background: var(--unk-bg);
+      color: var(--unk-text);
+      margin-top: 0.75rem;
+    }
+    .callout-warn {
+      border-left: 4px solid var(--warn-border);
+      background: var(--warn-bg);
+      color: var(--warn-text);
+      padding: 0.85rem 1rem;
+      border-radius: 6px;
+      margin-top: 0.75rem;
+    }
+    .pill {
+      display: inline-block;
+      background: #e2e8f0;
+      color: #1e293b;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+    .pill-var { background: #e0e7ff; color: #3730a3; }
+    .pill-warn { background: #fef3c7; color: #92400e; }
+    .pill-info { background: #ccfbf1; color: #115e59; }
+    .legend-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 0.65rem;
+      font-size: 0.88rem;
+    }
+    .funnel-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0;
+    }
+    .funnel-list li {
+      padding: 0.45rem 0.65rem;
+      border-left: 3px solid var(--border);
+      margin-bottom: 0.4rem;
+      background: #f8fafc;
+    }
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin: 0.75rem 0;
+    }
+    input[type="search"] {
+      padding: 0.45rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      min-width: 260px;
+      font-size: 0.9rem;
+    }
+    button {
+      padding: 0.42rem 0.75rem;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    button:hover { background: #f1f5f9; }
+    button.btn-active {
+      background: var(--text);
+      color: #ffffff;
+      border-color: var(--text);
+    }
+    button:focus-visible, input:focus-visible, summary:focus-visible {
+      outline: 3px solid #2563eb;
+      outline-offset: 2px;
+    }
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.55rem;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: top;
+    }
+    th { background: #f1f5f9; font-weight: 700; }
+    .sub-id { font-size: 0.75rem; color: var(--muted); margin-top: 0.15rem; }
+    .detail-grid {
+      display: grid;
+      gap: 0.3rem;
+      padding: 0.5rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      margin-top: 0.35rem;
+      font-size: 0.8rem;
+    }
+    details { margin-top: 0.35rem; }
+    summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+    footer {
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding-bottom: 2.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-banner" role="banner">
+    Research use only — not clinically validated; not for patient-care decisions. Offline Read-Only Human-Verifier View — Not Externally Audited or Production-Ready.
+  </div>
+
+  <header>
+    <h1>EGIS Human-Verifier Demo — TCGA-LUAD EGFR Open-Access Somatic Calls</h1>
+    <p>Deterministic, non-generative evidence inspection over frozen GDC snapshot <code>gdc-8d5ccf3bc2893baa</code> (<code>snapshots/real/gdc_tcga_luad_v3</code>).</p>
+    <div class="legend-bar" aria-label="Epistemic provenance legend">
+      <span><strong>Epistemic Distinction:</strong></span>
+      <span><span class="badge badge-source">Source Facts</span> Verbatim frozen GDC metadata &amp; raw counts</span>
+      <span><span class="badge badge-derived">EGIS-Derived</span> Deterministic engine evaluation &amp; replay</span>
+      <span><span class="badge badge-interp">Reviewer Interpretation</span> Narrow scope &amp; statistical boundaries</span>
+    </div>
+  </header>
+
+  <main>
+    <section aria-labelledby="sec-result">
+      <h2 id="sec-result">1. Result Summary</h2>
+      <div class="headline-box">
+        <span class="badge badge-derived">EGIS-Derived</span>
+        <div class="headline-fraction">40 / 571 <span style="font-size:1.1rem;font-weight:600;">(7.01%)</span></div>
+        <div class="headline-label">observed selected EGFR calls among file-linked primary-tumor samples</div>
+        <p><span class="badge badge-interp">Reviewer Interpretation</span> This is an observed-call fraction in the file-linked open WXS MAF subset — <strong>NOT</strong> TCGA-LUAD-wide prevalence, <strong>NOT</strong> a mutation rate across all cases, <strong>NOT</strong> a wild-type rate, and <strong>NOT</strong> a clinical finding.</p>
+        <p>Distinct Primary Tumor sample entities are counted once each in both numerator and denominator, even when a sample has multiple open WXS MAF files or compound EGFR variant occurrences.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="metric-sub-card"><span class="badge badge-derived">EGIS-Derived</span><div class="var-name">p.E746_A750del</div><div class="var-val">18 samples</div></div><div class="metric-sub-card"><span class="badge badge-derived">EGIS-Derived</span><div class="var-name">p.L858R</div><div class="var-val">22 samples</div></div>
+        <div class="metric-sub-card">
+          <span class="badge badge-source">Source Facts</span>
+          <div class="var-name">Canonical cDNA &amp; Build</div>
+          <p><code>GRCh38</code> | <code>ENST00000275493</code></p>
+          <div><span class="pill">c.2235_2249del: 12</span> <span class="pill">c.2236_2250del: 6</span> <span class="pill">c.2573T&gt;G: 22</span></div>
+        </div>
+      </div>
+      <p style="margin-top:0.65rem;font-size:0.88rem;color:var(--muted);">
+        Note: p.L858R (22) and p.E746_A750del (18) are disjoint across the 40 positive witness samples (0 samples carry both). 4 of these samples carry an additional non-target <em>EGFR</em> call on the same aliquot, and 21 file-linked Primary Tumor samples have &gt;1 WXS MAF file.
+      </p>
+    </section>
+
+    <section aria-labelledby="sec-denom">
+      <h2 id="sec-denom">2. Denominator Definition, Scope &amp; Why Missing Does Not Equal Wild-Type</h2>
+      <div class="grid-2">
+        <div class="card">
+          <span class="badge badge-source">Source Facts</span> <span class="badge badge-derived">Denominator Funnel</span>
+          <h3>Snapshot Cohort → 571-Sample Denominator</h3>
+          <p><strong>Named universe:</strong> <code>tcga_luad_gdc_r46_wxs_masked_ssm_primary_tumor_samples</code></p>
+          <p>All distinct GDC TCGA-LUAD Primary Tumor samples in Data Release 46.0 linked via HAS_ALIQUOT + HAS_FILE to at least one released open-access WXS Masked Somatic Mutation (MAF) file. Denominator establishes WXS Masked Somatic Mutation MAF availability, not wild-type locus coverage.</p>
+          <ul class="funnel-list">
+            <li><strong>585</strong> frozen TCGA-LUAD cases (<code>1781</code> total biospecimen samples)</li>
+            <li><strong>1075</strong> total <code>Primary Tumor</code> samples in the snapshot</li>
+            <li><strong>571</strong> <code>Primary Tumor</code> samples linked to &ge;1 released open-access WXS <code>Masked Somatic Mutation</code> (<code>MAF</code>) file (across <strong>559</strong> cases and <strong>612</strong> WXS MAF files; <strong>504</strong> Primary Tumor samples lack an open WXS MAF link)</li>
+            <li><strong>40</strong> file-linked Primary Tumor samples with an observed <code>p.L858R</code> or <code>p.E746_A750del</code> call (<strong>531</strong> lack that call in open MAFs)</li>
+          </ul>
+        </div>
+        <div class="card callout-unknown">
+          <span class="badge badge-derived">EGIS-Derived Abstention</span>
+          <h3>Why Unlisted Variants Return <code>UNKNOWN</code> / <code>INCOMPLETE_SNAPSHOT</code></h3>
+          <p>Open-access GDC <code>/ssm_occurrences</code> and WXS Masked Somatic Mutation MAF files record <strong>called positive somatic variants only</strong> (<code>POSITIVE_ONLY_OPEN_ACCESS_MAF</code>). They omit locus-level reference read depth for unmutated bases and mask potential germline calls.</p>
+          <p>Therefore, neither the <strong>504</strong> samples lacking an open MAF file nor the <strong>531</strong> file-linked samples without an observed EGFR variant establish wild-type status.</p>
+          <p><strong>Verified Negative/Wild-Type Query:</strong> Status = <strong>UNKNOWN</strong>, Reason = <code>INCOMPLETE_SNAPSHOT</code>, Witnesses = <code>0</code>, SQL Replay valid = <code>True</code>.</p>
+          <div class="card callout-unknown"><span class="badge badge-derived">EGIS-Derived</span> <span class="badge badge-source">Unacquired Gene Scope</span><h3>Unacquired Gene Abstention (<code>KRAS p.G12C</code>)</h3><p>Status: <strong>UNKNOWN</strong> / <code>INCOMPLETE_SNAPSHOT</code> | Witnesses: <code>0</code> | SQL Replay valid: <code>True</code></p><p>Only <code>EGFR</code> was acquired in <code>gdc_tcga_luad_v3</code>. EGIS refuses to return <code>0 / 571</code> for unacquired genes.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="sec-trace">
+      <h2 id="sec-trace">3. Evidence Traceability &amp; Witness Lineage Explorer</h2>
+      <div class="grid-2">
+        <div class="card">
+          <span class="badge badge-source">Source Facts</span>
+          <h3>Frozen Snapshot &amp; GDC Release Provenance</h3>
+          <ul>
+            <li><strong>Snapshot ID:</strong> <code>gdc-8d5ccf3bc2893baa</code> | <strong>Cohort ID:</strong> <code>tcga_luad_gdc_r46_molecular_v3</code></li>
+            <li><strong>Source &amp; Release:</strong> NCI Genomic Data Commons (GDC) Public REST API — Data Release 46.0 - August 10, 2026 (<code>tag: 8.5.0</code>, <code>commit: 8f7c2a51ab0084b216ad1b62a3fae8b945439c53</code>)</li>
+            <li><strong>Retrieved At (UTC):</strong> <code>2026-11-19T00:21:26+00:00</code></li>
+            <li><strong><code>raw_content_sha256</code>:</strong> <code>8d5ccf3bc2893baaf5cfb5b01a374dd34c27601b5093b5e1368174f1232896c9</code></li>
+            <li><strong><code>normalized_content_sha256</code>:</strong> <code>57ea7cf8f33afc6c2361eb92f7a795b622548ea15c7c0c3a534c54f99a02eb49</code></li>
+            <li><strong><code>sqlite_sha256</code>:</strong> <code>b56a15ca9ae42accff15258262fbf49fbc5ce7ffce5cbfc4f43349dc5e564b48</code></li>
+            <li><strong><code>manifest_sha256</code>:</strong> <code>71488379a4ed5c090e9d36bbdeca53bb44fe0922e1dda908edd463225f502dd1</code></li>
+            <li><strong><code>public_key.pem</code> SHA-256:</strong> <code>0cbc076591b360ac6c2ca2156467c4858a95a5ecab7f6b128c2c834045e0ba32</code> (no private key exposed)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="badge badge-derived">EGIS-Derived</span>
+          <h3>Certificate &amp; Replay Artifacts</h3>
+          <ul>
+            <li><strong>Supported Query Result:</strong> <code>SUPPORTED</code> / <code>NONE</code> (40 / 571)</li>
+            <li><strong><code>certificate_sha256</code>:</strong> <code>f9588b397875454a1e631261937cf66e418e64e57f7e7f8124d0d881a87e312a</code></li>
+            <li><strong>Algorithm &amp; Rules:</strong> <code>Ed25519</code> | <code>rules-2.0.0</code></li>
+            <li><strong>Offline SQL Replay:</strong> <code>valid=True</code>, <code>status=SUPPORTED</code></li>
+            <li><strong>Linkage Audit (GDC v3):</strong> <code>93 / 93</code> EGFR <code>ssm_occurrences</code> linked 1-to-1 (<code>0</code> unmatched, <code>0</code> multiply matched).</li>
+          </ul>
+          <details>
+            <summary>Inspect Supported Query, Result, Certificate Header &amp; Replay JSON</summary>
+            <h4>supported_query.json</h4>
+            <pre>{
+  &quot;cohort_id&quot;: &quot;tcga_luad_gdc_r46_molecular_v3&quot;,
+  &quot;denominator_basis&quot;: &quot;tcga_luad_gdc_r46_wxs_masked_ssm_primary_tumor_samples&quot;,
+  &quot;entity_level&quot;: &quot;sample&quot;,
+  &quot;operation&quot;: &quot;cohort_count&quot;,
+  &quot;predicate&quot;: {
+    &quot;access&quot;: &quot;open&quot;,
+    &quot;call_status&quot;: &quot;POSITIVE&quot;,
+    &quot;canonical_transcript_id&quot;: &quot;ENST00000275493&quot;,
+    &quot;data_category&quot;: &quot;Simple Nucleotide Variation&quot;,
+    &quot;data_format&quot;: &quot;MAF&quot;,
+    &quot;data_type&quot;: &quot;Masked Somatic Mutation&quot;,
+    &quot;experimental_strategy&quot;: &quot;WXS&quot;,
+    &quot;gene_symbol&quot;: &quot;EGFR&quot;,
+    &quot;hgvsp_short_in&quot;: [
+      &quot;p.L858R&quot;,
+      &quot;p.E746_A750del&quot;
+    ],
+    &quot;ncbi_build&quot;: &quot;GRCh38&quot;,
+    &quot;project_id&quot;: &quot;TCGA-LUAD&quot;,
+    &quot;sample_type&quot;: &quot;Primary Tumor&quot;,
+    &quot;source&quot;: &quot;gdc&quot;,
+    &quot;state&quot;: &quot;released&quot;
+  },
+  &quot;snapshot_id&quot;: &quot;gdc-8d5ccf3bc2893baa&quot;
+}</pre>
+            <h4>supported_replay.json</h4>
+            <pre>{
+  &quot;reason_code&quot;: &quot;NONE&quot;,
+  &quot;status&quot;: &quot;SUPPORTED&quot;,
+  &quot;valid&quot;: true
+}</pre>
+            <h4>supported_certificate.json (metadata &amp; signature)</h4>
+            <pre>{
+  &quot;certificate_sha256&quot;: &quot;f9588b397875454a1e631261937cf66e418e64e57f7e7f8124d0d881a87e312a&quot;,
+  &quot;certificate_version&quot;: &quot;2.0.0&quot;,
+  &quot;derivation&quot;: {
+    &quot;input&quot;: &quot;raw.json&quot;,
+    &quot;input_sha256&quot;: &quot;8d5ccf3bc2893baaf5cfb5b01a374dd34c27601b5093b5e1368174f1232896c9&quot;,
+    &quot;output&quot;: &quot;normalized.json&quot;,
+    &quot;output_sha256&quot;: &quot;57ea7cf8f33afc6c2361eb92f7a795b622548ea15c7c0c3a534c54f99a02eb49&quot;,
+    &quot;version&quot;: &quot;raw-to-normalized-v1&quot;
+  },
+  &quot;engine&quot;: &quot;cancer-evidence-engine&quot;,
+  &quot;evidence_scope&quot;: {
+    &quot;coverage&quot;: {
+      &quot;gdc&quot;: {
+        &quot;aliquot_count&quot;: 7978,
+        &quot;assay_count&quot;: 93,
+        &quot;cohort_id&quot;: &quot;tcga_luad_gdc_r46_molecular_v3&quot;,
+        &quot;complete&quot;: true,
+        &quot;expected_total&quot;: 585,
+        &quot;page_count&quot;: 3,
+        &quot;retrieved_count&quot;: 585,
+        &quot;rnaseq_file_count&quot;: 601,
+        &quot;sample_count&quot;: 1781,
+        &quot;scope&quot;: &quot;TCGA-LUAD&quot;,
+        &quot;scoped_file_count&quot;: 1219,
+        &quot;snv_maf_file_count&quot;: 618,
+        &quot;ssm_occurrences_expected_total&quot;: 93
+      }
+    },
+    &quot;source&quot;: &quot;gdc&quot;
+  },
+  &quot;limitations&quot;: [
+    &quot;Metadata only; no clinical, prognostic, biomarker, causal, or patient-identity claim.&quot;
+  ],
+  &quot;query&quot;: {
+    &quot;cohort_id&quot;: &quot;tcga_luad_gdc_r46_molecular_v3&quot;,
+    &quot;denominator_basis&quot;: &quot;tcga_luad_gdc_r46_wxs_masked_ssm_primary_tumor_samples&quot;,
+    &quot;entity_level&quot;: &quot;sample&quot;,
+    &quot;operation&quot;: &quot;cohort_count&quot;,
+    &quot;predicate&quot;: {
+      &quot;access&quot;: &quot;open&quot;,
+      &quot;call_status&quot;: &quot;POSITIVE&quot;,
+      &quot;canonical_transcript_id&quot;: &quot;ENST00000275493&quot;,
+      &quot;data_category&quot;: &quot;Simple Nucleotide Variation&quot;,
+      &quot;data_format&quot;: &quot;MAF&quot;,
+      &quot;data_type&quot;: &quot;Masked Somatic Mutation&quot;,
+      &quot;experimental_strategy&quot;: &quot;WXS&quot;,
+      &quot;gene_symbol&quot;: &quot;EGFR&quot;,
+      &quot;hgvsp_short_in&quot;: [
+        &quot;p.L858R&quot;,
+        &quot;p.E746_A750del&quot;
+      ],
+      &quot;ncbi_build&quot;: &quot;GRCh38&quot;,
+      &quot;project_id&quot;: &quot;TCGA-LUAD&quot;,
+      &quot;sample_type&quot;: &quot;Primary Tumor&quot;,
+      &quot;source&quot;: &quot;gdc&quot;,
+      &quot;state&quot;: &quot;released&quot;
+    },
+    &quot;snapshot_id&quot;: &quot;gdc-8d5ccf3bc2893baa&quot;
+  },
+  &quot;query_sha256&quot;: &quot;b1fcd950f7b2be46173c1b9f836aa2fd0f56c0e2edc1b33aff2eb9a7229dd801&quot;,
+  &quot;rule_version&quot;: &quot;rules-2.0.0&quot;,
+  &quot;signature&quot;: &quot;DG6rSWaA4los61hacK37qcUCwY9bd25qDwOLccD9x/nZtg5R9zebx9rW5fLHKR+x8XGy6FtCbGsR61HoJwnnDg==&quot;,
+  &quot;signature_algorithm&quot;: &quot;Ed25519&quot;,
+  &quot;snapshot_id&quot;: &quot;gdc-8d5ccf3bc2893baa&quot;,
+  &quot;snapshot_manifest_sha256&quot;: &quot;71488379a4ed5c090e9d36bbdeca53bb44fe0922e1dda908edd463225f502dd1&quot;,
+  &quot;snapshot_sha256&quot;: &quot;8d5ccf3bc2893baaf5cfb5b01a374dd34c27601b5093b5e1368174f1232896c9&quot;,
+  &quot;verification_public_key&quot;: &quot;keys/public_key.pem&quot;
+}</pre>
+            <h4>abstaining_negative_query.json &amp; abstaining_negative_result.json</h4>
+            <pre>{
+  &quot;query&quot;: {
+    &quot;cohort_id&quot;: &quot;tcga_luad_gdc_r46_molecular_v3&quot;,
+    &quot;denominator_basis&quot;: &quot;tcga_luad_gdc_r46_wxs_masked_ssm_primary_tumor_samples&quot;,
+    &quot;entity_level&quot;: &quot;sample&quot;,
+    &quot;operation&quot;: &quot;cohort_count&quot;,
+    &quot;predicate&quot;: {
+      &quot;access&quot;: &quot;open&quot;,
+      &quot;call_status&quot;: &quot;NEGATIVE&quot;,
+      &quot;canonical_transcript_id&quot;: &quot;ENST00000275493&quot;,
+      &quot;data_category&quot;: &quot;Simple Nucleotide Variation&quot;,
+      &quot;data_format&quot;: &quot;MAF&quot;,
+      &quot;data_type&quot;: &quot;Masked Somatic Mutation&quot;,
+      &quot;experimental_strategy&quot;: &quot;WXS&quot;,
+      &quot;gene_symbol&quot;: &quot;EGFR&quot;,
+      &quot;hgvsp_short_in&quot;: [
+        &quot;p.L858R&quot;,
+        &quot;p.E746_A750del&quot;
+      ],
+      &quot;ncbi_build&quot;: &quot;GRCh38&quot;,
+      &quot;project_id&quot;: &quot;TCGA-LUAD&quot;,
+      &quot;require_explicit_negative_coverage&quot;: true,
+      &quot;sample_type&quot;: &quot;Primary Tumor&quot;,
+      &quot;source&quot;: &quot;gdc&quot;,
+      &quot;state&quot;: &quot;released&quot;
+    },
+    &quot;snapshot_id&quot;: &quot;gdc-8d5ccf3bc2893baa&quot;
+  },
+  &quot;replay&quot;: {
+    &quot;reason_code&quot;: &quot;NONE&quot;,
+    &quot;status&quot;: &quot;UNKNOWN&quot;,
+    &quot;valid&quot;: true
+  },
+  &quot;result&quot;: {
+    &quot;evidence_refs&quot;: [],
+    &quot;reason_code&quot;: &quot;INCOMPLETE_SNAPSHOT&quot;,
+    &quot;result&quot;: {},
+    &quot;status&quot;: &quot;UNKNOWN&quot;,
+    &quot;witness&quot;: []
+  }
+}</pre>
+          </details>
+        </div>
+      </div>
+
+      <h3 style="margin-top:1.1rem;">Sample &rarr; Tumor Aliquot &rarr; Variant Record &rarr; MAF File Lineage (Initial View: First 5 of 40)</h3>
+      <div class="controls-bar">
+        <label for="witness-search" style="font-weight:600;">Filter witnesses:</label>
+        <input id="witness-search" type="search" placeholder="Search sample, case, aliquot, variant, or file ID..." aria-label="Search witness IDs and attributes">
+        <button type="button" class="btn-active" data-filter-mode="all" aria-pressed="true">All (40)</button>
+        <button type="button" data-filter-mode="p.L858R" aria-pressed="false">p.L858R (22)</button>
+        <button type="button" data-filter-mode="p.E746_A750del" aria-pressed="false">p.E746_A750del (18)</button>
+        <button type="button" data-filter-mode="special" aria-pressed="false">Multi-MAF or Compound Co-variant</button>
+        <button type="button" id="toggle-all-witnesses" aria-expanded="false">Show all 40 witnesses</button>
+      </div>
+      <div id="witness-filter-status" aria-live="polite" style="font-size:0.85rem;color:var(--muted);"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Primary Tumor Sample</th>
+              <th>Observed Variant</th>
+              <th>Tumor Aliquot</th>
+              <th>GDC Variant Record</th>
+              <th>WXS MAF File</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="witness-row" data-index="1" data-initial-visible="true" data-variant="p.E746_A750del" data-special="false" data-search="0382e297-1b96-433b-9440-6811d685b13b tcga-86-8074-01a 482eb2a7-6fed-4e4c-b1b6-14d6d869f855 tcga-86-8074 699460ce-e908-4d17-8425-b7fca3bfbeb9 tcga-86-8074-01a-11d-2238-08 ae807e58-718c-50c0-816b-a7f69ccd69f0 p.e746_a750del c.2235_2249del 61300c06-3272-45e4-b19f-94dfd276debd f3934f06-2c19-40b7-88dc-b46d1a573bdc.wxs.aliquot_ensemble_masked.maf.gz"><td><strong>#1</strong></td><td><code>TCGA-86-8074-01A</code><div class="sub-id"><code>0382e297-1b96-433b-9440-6811d685b13b</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>699460ce-e908-4d17-8425-b7fca3bfbeb9</code><div class="sub-id">TCGA-86-8074-01A-11D-2238-08</div></td><td><code>ae807e58-718c-50c0-816b-a7f69ccd69f0</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>61300c06-3272-45e4-b19f-94dfd276debd</code><div class="sub-id">f3934f06-2c19-40b7-88dc-b46d1a573bdc.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-86-8074 (<code>482eb2a7-6fed-4e4c-b1b6-14d6d869f855</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 21/118 alt/total (ref 97); normal 103</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>4b4655c7-8e74-41e5-addb-112ad0689559</code> | <strong>MAF MD5:</strong> <code>5153eb8081c86b3e7fe5f19f904d1149</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="2" data-initial-visible="true" data-variant="p.E746_A750del" data-special="false" data-search="1454406f-934b-4073-814e-387008c99a2b tcga-62-a46u-01a 793649e5-f479-4d64-8723-2ef488fe0fd9 tcga-62-a46u 9315db72-db18-46e2-835b-2ffb41028237 tcga-62-a46u-01a-11d-a24d-08 60542825-b3b3-586e-8ec3-c32faa086610 p.e746_a750del c.2236_2250del 1f48e22d-25c6-4df2-82fb-3aa8748f185b c7439e2f-4fa6-444a-9f07-f00dab5bb121.wxs.aliquot_ensemble_masked.maf.gz"><td><strong>#2</strong></td><td><code>TCGA-62-A46U-01A</code><div class="sub-id"><code>1454406f-934b-4073-814e-387008c99a2b</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2236_2250del</code></div> </td><td><code>9315db72-db18-46e2-835b-2ffb41028237</code><div class="sub-id">TCGA-62-A46U-01A-11D-A24D-08</div></td><td><code>60542825-b3b3-586e-8ec3-c32faa086610</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>1f48e22d-25c6-4df2-82fb-3aa8748f185b</code><div class="sub-id">c7439e2f-4fa6-444a-9f07-f00dab5bb121.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-62-A46U (<code>793649e5-f479-4d64-8723-2ef488fe0fd9</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174773delGAATTAAGAGAAGCA</code></div><div><strong>Read Depths:</strong> tumor 9/81 alt/total (ref 72); normal 61</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>054c4e9c-1e21-4b72-bce5-0980c09df0d6</code> | <strong>MAF MD5:</strong> <code>3d58954ecd1e42627f4829db7777a446</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="3" data-initial-visible="true" data-variant="p.L858R" data-special="false" data-search="185bc9bd-1e20-467c-9c06-908c8aa27e7d tcga-49-4490-01a 6c3655ca-8ae7-4ad7-b3e4-0c3ec293fba7 tcga-49-4490 940455cf-aa91-432a-bc39-9dfba206e32b tcga-49-4490-01a-21d-1855-08 ee62183c-0fc2-5107-ac63-1d04483ca6f3 p.l858r c.2573t&gt;g b57794b8-77dd-42a3-931b-5ca6e6ca3030 a41c93c6-e79d-4852-953a-c0597f74d0c7.wxs.aliquot_ensemble_masked.maf.gz"><td><strong>#3</strong></td><td><code>TCGA-49-4490-01A</code><div class="sub-id"><code>185bc9bd-1e20-467c-9c06-908c8aa27e7d</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>940455cf-aa91-432a-bc39-9dfba206e32b</code><div class="sub-id">TCGA-49-4490-01A-21D-1855-08</div></td><td><code>ee62183c-0fc2-5107-ac63-1d04483ca6f3</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>b57794b8-77dd-42a3-931b-5ca6e6ca3030</code><div class="sub-id">a41c93c6-e79d-4852-953a-c0597f74d0c7.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-49-4490 (<code>6c3655ca-8ae7-4ad7-b3e4-0c3ec293fba7</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 46/115 alt/total (ref 69); normal 86</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>75ddc632-0535-4209-b189-302eedf4741c</code> | <strong>MAF MD5:</strong> <code>87e1f03ae5e027d508a8425c156f260e</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="4" data-initial-visible="true" data-variant="p.L858R" data-special="false" data-search="23157ce2-7257-4118-9a6e-4cdfbc6c4bf7 tcga-86-8075-01a 8869000d-09d7-465a-ac32-54d1935c43e7 tcga-86-8075 edc1d956-747a-41fe-b825-f07486629b65 tcga-86-8075-01a-11d-2238-08 a80b17ad-456c-53bb-bc1a-4a333322d335 p.l858r c.2573t&gt;g 5ee9ff69-bbba-4d72-a9f4-e2e4b282799e 9fb8bda1-9ca8-480d-9c64-08114554bf71.wxs.aliquot_ensemble_masked.maf.gz"><td><strong>#4</strong></td><td><code>TCGA-86-8075-01A</code><div class="sub-id"><code>23157ce2-7257-4118-9a6e-4cdfbc6c4bf7</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>edc1d956-747a-41fe-b825-f07486629b65</code><div class="sub-id">TCGA-86-8075-01A-11D-2238-08</div></td><td><code>a80b17ad-456c-53bb-bc1a-4a333322d335</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>5ee9ff69-bbba-4d72-a9f4-e2e4b282799e</code><div class="sub-id">9fb8bda1-9ca8-480d-9c64-08114554bf71.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-86-8075 (<code>8869000d-09d7-465a-ac32-54d1935c43e7</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 65/150 alt/total (ref 85); normal 259</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>bef25d55-1f0d-4c42-8771-88c84a639583</code> | <strong>MAF MD5:</strong> <code>7b685df23ab242bcf99c0e61d317a046</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="5" data-initial-visible="true" data-variant="p.L858R" data-special="false" data-search="2df58e78-c244-4e4e-9360-d1ce8943c01d tcga-62-8394-01a 742e0e32-25b5-4d41-8bf5-364b571cfd93 tcga-62-8394 5fe53cd5-76dc-491e-aa85-bd85386e1fc5 tcga-62-8394-01a-11d-2323-08 2942d925-55dc-5a82-bbf8-75d7ca61ed32 p.l858r c.2573t&gt;g 06c8f74d-21ff-43ff-b921-a364f8010b42 5623afdf-6852-4592-9a22-a36ac4319bb9.wxs.aliquot_ensemble_masked.maf.gz"><td><strong>#5</strong></td><td><code>TCGA-62-8394-01A</code><div class="sub-id"><code>2df58e78-c244-4e4e-9360-d1ce8943c01d</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>5fe53cd5-76dc-491e-aa85-bd85386e1fc5</code><div class="sub-id">TCGA-62-8394-01A-11D-2323-08</div></td><td><code>2942d925-55dc-5a82-bbf8-75d7ca61ed32</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>06c8f74d-21ff-43ff-b921-a364f8010b42</code><div class="sub-id">5623afdf-6852-4592-9a22-a36ac4319bb9.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-62-8394 (<code>742e0e32-25b5-4d41-8bf5-364b571cfd93</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 87/207 alt/total (ref 120); normal 166</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>95c5ac14-9da0-40f8-a7d5-dac263b19b66</code> | <strong>MAF MD5:</strong> <code>4b19f22791cac8c377d771bfb2984213</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="6" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="3073311b-5b00-4fd7-b1f6-1067d2e86564 tcga-97-8547-01a ac0d7a82-82cb-4aec-b859-e37375f3de8b tcga-97-8547 af407765-5f62-4e41-877d-43f2ee3b7b52 tcga-97-8547-01a-11d-2393-08 e70dc1c0-c308-58e1-94d6-c63ebc1c274a p.e746_a750del c.2235_2249del fbf056f2-8cd3-4ad1-83a1-608f41362823 7a5fb9c5-bc52-4c7f-a65f-8660e7fca8d8.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#6</strong></td><td><code>TCGA-97-8547-01A</code><div class="sub-id"><code>3073311b-5b00-4fd7-b1f6-1067d2e86564</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>af407765-5f62-4e41-877d-43f2ee3b7b52</code><div class="sub-id">TCGA-97-8547-01A-11D-2393-08</div></td><td><code>e70dc1c0-c308-58e1-94d6-c63ebc1c274a</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>fbf056f2-8cd3-4ad1-83a1-608f41362823</code><div class="sub-id">7a5fb9c5-bc52-4c7f-a65f-8660e7fca8d8.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-97-8547 (<code>ac0d7a82-82cb-4aec-b859-e37375f3de8b</code>) — Acinar Cell Neoplasms</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 50/143 alt/total (ref 93); normal 76</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>9f7fa431-82bf-43de-9686-8a219762c5d2</code> | <strong>MAF MD5:</strong> <code>7db033004dec9cf556d9c87fc02f36de</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="7" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="323d4a3b-38d8-4428-9135-437a839dc8e4 tcga-75-6207-01a 58babefe-7e81-4594-ba29-50d1de92a5ab tcga-75-6207 5a49e3fd-a47d-4b7d-9485-4238a88f4516 tcga-75-6207-01a-11d-1753-08 72a403b5-1f26-5563-878a-b7aef5b3e880 p.e746_a750del c.2235_2249del b9e60d1f-e1a5-4afd-bb85-8d7586646e45 10fd9e5a-9730-4ca1-a470-35eba9903ab7.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#7</strong></td><td><code>TCGA-75-6207-01A</code><div class="sub-id"><code>323d4a3b-38d8-4428-9135-437a839dc8e4</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>5a49e3fd-a47d-4b7d-9485-4238a88f4516</code><div class="sub-id">TCGA-75-6207-01A-11D-1753-08</div></td><td><code>72a403b5-1f26-5563-878a-b7aef5b3e880</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>b9e60d1f-e1a5-4afd-bb85-8d7586646e45</code><div class="sub-id">10fd9e5a-9730-4ca1-a470-35eba9903ab7.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-75-6207 (<code>58babefe-7e81-4594-ba29-50d1de92a5ab</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 16/66 alt/total (ref 49); normal 109</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>77398ded-5ae4-46fd-ac4a-a8b278586dd9</code> | <strong>MAF MD5:</strong> <code>b713ed914ceae37727f22308c46d2744</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="8" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="3d39d81b-c341-426c-b979-560c429b3af2 tcga-97-a4m7-01a c6b680e3-d96e-4fc7-8053-77454b7a14fa tcga-97-a4m7 77909b63-e977-4ff9-941d-20fc6c01d87e tcga-97-a4m7-01a-11d-a24p-08 f4a3ad8c-8f56-5686-8819-0d5ff8f68ddd p.l858r c.2573t&gt;g 7c91d8b3-b6cc-437e-9211-f2a9d1314411 037ecdc2-dc6a-45fd-8eb3-6fa1fc4db46e.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#8</strong></td><td><code>TCGA-97-A4M7-01A</code><div class="sub-id"><code>3d39d81b-c341-426c-b979-560c429b3af2</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>77909b63-e977-4ff9-941d-20fc6c01d87e</code><div class="sub-id">TCGA-97-A4M7-01A-11D-A24P-08</div></td><td><code>f4a3ad8c-8f56-5686-8819-0d5ff8f68ddd</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>7c91d8b3-b6cc-437e-9211-f2a9d1314411</code><div class="sub-id">037ecdc2-dc6a-45fd-8eb3-6fa1fc4db46e.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-97-A4M7 (<code>c6b680e3-d96e-4fc7-8053-77454b7a14fa</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 19/142 alt/total (ref 123); normal 180</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>35d58aa1-b0d0-4f93-a5f9-12b48b93a467</code> | <strong>MAF MD5:</strong> <code>72398b668718b1d9c9ed532eaf716efd</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="9" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="3e7cdfb1-cdeb-4c56-91aa-08930083b39d tcga-62-8402-01a 433a32d0-93d1-4897-8e36-beb1ec1d998e tcga-62-8402 b82c0c81-42ac-491d-89c5-b1ee87855852 tcga-62-8402-01a-11d-2323-08 0c2d9027-f912-5e89-bbbf-19b7e5a4e365 p.e746_a750del c.2235_2249del b22cb1a6-e0f7-46b2-8067-e9117e5004d4 aa64d00a-b405-4526-a033-bd308fe79c5b.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#9</strong></td><td><code>TCGA-62-8402-01A</code><div class="sub-id"><code>3e7cdfb1-cdeb-4c56-91aa-08930083b39d</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>b82c0c81-42ac-491d-89c5-b1ee87855852</code><div class="sub-id">TCGA-62-8402-01A-11D-2323-08</div></td><td><code>0c2d9027-f912-5e89-bbbf-19b7e5a4e365</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>b22cb1a6-e0f7-46b2-8067-e9117e5004d4</code><div class="sub-id">aa64d00a-b405-4526-a033-bd308fe79c5b.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-62-8402 (<code>433a32d0-93d1-4897-8e36-beb1ec1d998e</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 19/59 alt/total (ref 40); normal 96</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>8cb938c8-f7ee-4310-b094-6384c28ffa29</code> | <strong>MAF MD5:</strong> <code>2e16849d524db2dcae7f08b2f5211964</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="10" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="45021ebd-8e13-44c2-8203-aa9f72b50e6e tcga-j2-8192-01a 369f14c4-2191-4962-a309-3e23ddc4e5fc tcga-j2-8192 4ff0abcf-911c-4531-833e-93dbab2c5e35 tcga-j2-8192-01a-11d-2238-08 b4d90b49-b037-5e27-8891-4913ca919508 p.e746_a750del c.2236_2250del 5877a051-fc2f-4e02-b49b-b32ad032f948 ecae4d1a-76a0-40a8-9f83-ec7412f89fe5.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#10</strong></td><td><code>TCGA-J2-8192-01A</code><div class="sub-id"><code>45021ebd-8e13-44c2-8203-aa9f72b50e6e</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2236_2250del</code></div> </td><td><code>4ff0abcf-911c-4531-833e-93dbab2c5e35</code><div class="sub-id">TCGA-J2-8192-01A-11D-2238-08</div></td><td><code>b4d90b49-b037-5e27-8891-4913ca919508</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>5877a051-fc2f-4e02-b49b-b32ad032f948</code><div class="sub-id">ecae4d1a-76a0-40a8-9f83-ec7412f89fe5.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-J2-8192 (<code>369f14c4-2191-4962-a309-3e23ddc4e5fc</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174773delGAATTAAGAGAAGCA</code></div><div><strong>Read Depths:</strong> tumor 42/128 alt/total (ref 86); normal 99</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>3ea49416-1c76-4ad9-8216-37be7101dd8c</code> | <strong>MAF MD5:</strong> <code>3a081148461c7bbe082630932f53e42c</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="11" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="48dd9724-8848-48c3-8628-7e78a24e3f2c tcga-44-2661-01a f3501466-cf32-4866-b5fb-e94dd32341bc tcga-44-2661 3c3a2e7c-9aa0-495e-95c7-87f661b9ed92 tcga-44-2661-01a-01d-1105-08 f75ee010-2217-5efe-a597-f18894d4cab6 p.e746_a750del c.2235_2249del 663bd60e-4763-41ef-8834-bb1e18aa37f3 d4aa62ab-85aa-4ff9-816f-de4091d87daf.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#11</strong></td><td><code>TCGA-44-2661-01A</code><div class="sub-id"><code>48dd9724-8848-48c3-8628-7e78a24e3f2c</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>3c3a2e7c-9aa0-495e-95c7-87f661b9ed92</code><div class="sub-id">TCGA-44-2661-01A-01D-1105-08</div></td><td><code>f75ee010-2217-5efe-a597-f18894d4cab6</code><div class="sub-id">Callers: mutect2,pindel</div></td><td><code>663bd60e-4763-41ef-8834-bb1e18aa37f3</code><div class="sub-id">d4aa62ab-85aa-4ff9-816f-de4091d87daf.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-44-2661 (<code>f3501466-cf32-4866-b5fb-e94dd32341bc</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 16/158 alt/total (ref 142); normal 174</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>2040f069-44ef-43cf-8ad0-51a6fd583ab6</code> | <strong>MAF MD5:</strong> <code>9037577456d718f7845b286591362597</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="12" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="4b24bb00-acf5-4cf4-a84a-020baa60782d tcga-97-a4m6-01a 31ff69b5-9e58-44da-8326-bdfc7ee495c4 tcga-97-a4m6 d5dd1e5e-45f0-4aeb-ac0d-ecb6b5bfc6aa tcga-97-a4m6-01a-11d-a24p-08 a924e272-1e79-5fcf-bcad-11cd70345ae6 p.e746_a750del c.2235_2249del 85b4f6c7-6bc7-4faa-b579-174c8a5574c3 1b02e400-814b-4cee-a05c-fa6e31441b84.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#12</strong></td><td><code>TCGA-97-A4M6-01A</code><div class="sub-id"><code>4b24bb00-acf5-4cf4-a84a-020baa60782d</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>d5dd1e5e-45f0-4aeb-ac0d-ecb6b5bfc6aa</code><div class="sub-id">TCGA-97-A4M6-01A-11D-A24P-08</div></td><td><code>a924e272-1e79-5fcf-bcad-11cd70345ae6</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>85b4f6c7-6bc7-4faa-b579-174c8a5574c3</code><div class="sub-id">1b02e400-814b-4cee-a05c-fa6e31441b84.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-97-A4M6 (<code>31ff69b5-9e58-44da-8326-bdfc7ee495c4</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 13/80 alt/total (ref 67); normal 76</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>bf3f00fe-80a5-4073-9cec-7cd17e903da5</code> | <strong>MAF MD5:</strong> <code>faeb2ae59f7453f011453ffc550988e2</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="13" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="5711ce53-0bac-4a5d-b7ba-4e1bc0c56924 tcga-97-8177-01a 09078761-1c14-4d01-8e15-535c19a9b0f9 tcga-97-8177 d0aee258-a42e-4e90-a4e2-cd6a1b437915 tcga-97-8177-01a-11d-2284-08 71cea336-35fd-5061-8ee0-8dea8bc3b201 p.l858r c.2573t&gt;g f50e5b1c-99bc-4e7e-8f39-5f421c4ea2fd 54c096ab-2dd8-4b48-a9b8-2254714ee5ea.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#13</strong></td><td><code>TCGA-97-8177-01A</code><div class="sub-id"><code>5711ce53-0bac-4a5d-b7ba-4e1bc0c56924</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>d0aee258-a42e-4e90-a4e2-cd6a1b437915</code><div class="sub-id">TCGA-97-8177-01A-11D-2284-08</div></td><td><code>71cea336-35fd-5061-8ee0-8dea8bc3b201</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>f50e5b1c-99bc-4e7e-8f39-5f421c4ea2fd</code><div class="sub-id">54c096ab-2dd8-4b48-a9b8-2254714ee5ea.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-97-8177 (<code>09078761-1c14-4d01-8e15-535c19a9b0f9</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 55/287 alt/total (ref 232); normal 95</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>f9d419fc-603b-44bb-964c-1d80d0dddb6b</code> | <strong>MAF MD5:</strong> <code>5ecd9bcdb76af66098bb8f06519fc604</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="14" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="71de7aed-0fd7-4381-847b-885e1310d6ef tcga-mp-a4sw-01a 15f12d2c-b834-4bfc-b526-f03bf85bfe96 tcga-mp-a4sw 313b91b6-5cd0-4e1a-b9f1-2eeb0694d0f6 tcga-mp-a4sw-01a-21d-a24p-08 f5eae221-91a0-5590-bf08-1f2037106699 p.l858r c.2573t&gt;g 04cf76d7-4dc2-440d-a151-ce3a2d20fa5b 87fcadb6-f93b-4665-8737-99653ba137ec.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#14</strong></td><td><code>TCGA-MP-A4SW-01A</code><div class="sub-id"><code>71de7aed-0fd7-4381-847b-885e1310d6ef</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>313b91b6-5cd0-4e1a-b9f1-2eeb0694d0f6</code><div class="sub-id">TCGA-MP-A4SW-01A-21D-A24P-08</div></td><td><code>f5eae221-91a0-5590-bf08-1f2037106699</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>04cf76d7-4dc2-440d-a151-ce3a2d20fa5b</code><div class="sub-id">87fcadb6-f93b-4665-8737-99653ba137ec.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-MP-A4SW (<code>15f12d2c-b834-4bfc-b526-f03bf85bfe96</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 152/267 alt/total (ref 115); normal 131</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>fca59518-94d9-4daf-8283-da6d6c85cd21</code> | <strong>MAF MD5:</strong> <code>5927fdb2c1bdb2917e49b62e67edc394</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="15" data-initial-visible="false" data-variant="p.L858R" data-special="true" data-search="74bcf2d5-fd42-423e-bd96-b2de1b0cf778 tcga-67-3770-01a eeab558b-8d1e-4843-861d-dbfb06061758 tcga-67-3770 92da1bb5-2e83-4f2f-88dd-afc0cb7d91d1 tcga-67-3770-01a-01w-0928-08 77b9cd53-f389-54fd-b68e-150765666453 p.l858r c.2573t&gt;g b6b0bda5-6719-4a69-a6b1-725815bfc49f 959dd170-dc8a-4167-894b-a6ab117f8d9d.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#15</strong></td><td><code>TCGA-67-3770-01A</code><div class="sub-id"><code>74bcf2d5-fd42-423e-bd96-b2de1b0cf778</code></div> <span class="pill pill-info">2 MAFs</span></td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>92da1bb5-2e83-4f2f-88dd-afc0cb7d91d1</code><div class="sub-id">TCGA-67-3770-01A-01W-0928-08</div></td><td><code>77b9cd53-f389-54fd-b68e-150765666453</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>b6b0bda5-6719-4a69-a6b1-725815bfc49f</code><div class="sub-id">959dd170-dc8a-4167-894b-a6ab117f8d9d.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-67-3770 (<code>eeab558b-8d1e-4843-861d-dbfb06061758</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 138/487 alt/total (ref 349); normal 177</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>7573999f-0520-41aa-9ef7-6094c11e220c</code> | <strong>MAF MD5:</strong> <code>050da909fc4a076b30832067ba96f16e</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="16" data-initial-visible="false" data-variant="p.L858R" data-special="true" data-search="7ca68089-c61f-4d31-8cc8-fb11ae70910a tcga-49-4494-01a c6d78e27-e510-4f57-abae-19efa6105a8d tcga-49-4494 136bc973-1908-4767-9b22-d43d522b7c71 tcga-49-4494-01a-01d-1265-08 b834e073-cf63-5694-b44f-4c694d53ef94 p.l858r c.2573t&gt;g 88dd94aa-b147-44d9-9a20-f5ee3e0e99c8 9ebd8976-aa26-491e-8406-86574f6cd76a.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#16</strong></td><td><code>TCGA-49-4494-01A</code><div class="sub-id"><code>7ca68089-c61f-4d31-8cc8-fb11ae70910a</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> <span class="pill pill-warn">+1 co-EGFR</span></td><td><code>136bc973-1908-4767-9b22-d43d522b7c71</code><div class="sub-id">TCGA-49-4494-01A-01D-1265-08</div></td><td><code>b834e073-cf63-5694-b44f-4c694d53ef94</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>88dd94aa-b147-44d9-9a20-f5ee3e0e99c8</code><div class="sub-id">9ebd8976-aa26-491e-8406-86574f6cd76a.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-49-4494 (<code>c6d78e27-e510-4f57-abae-19efa6105a8d</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 101/223 alt/total (ref 121); normal 165</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>417cd2e0-404a-4820-be10-b02d26fe89fd</code> | <strong>MAF MD5:</strong> <code>90f3f5f23675a9179b468e12d85c111d</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> p.T790M (c.2369C&gt;T)</div></div></details></td></tr>
+<tr class="witness-row" data-index="17" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="8010b0ae-f003-491e-aa81-36a9dff7de96 tcga-64-1681-01a c583fdd1-8cd2-4c15-a23e-0644261f65da tcga-64-1681 3813c301-9622-4567-bc72-d17acbeb236f tcga-64-1681-01a-11d-2063-08 cae08a4d-b302-598f-ac16-03b8ef960c72 p.l858r c.2573t&gt;g 0e6f702b-dd24-4d27-87ff-d2dd264c9093 d308e3a5-99a2-4cd0-9869-26ff76a6dd75.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#17</strong></td><td><code>TCGA-64-1681-01A</code><div class="sub-id"><code>8010b0ae-f003-491e-aa81-36a9dff7de96</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>3813c301-9622-4567-bc72-d17acbeb236f</code><div class="sub-id">TCGA-64-1681-01A-11D-2063-08</div></td><td><code>cae08a4d-b302-598f-ac16-03b8ef960c72</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>0e6f702b-dd24-4d27-87ff-d2dd264c9093</code><div class="sub-id">d308e3a5-99a2-4cd0-9869-26ff76a6dd75.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-64-1681 (<code>c583fdd1-8cd2-4c15-a23e-0644261f65da</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 40/124 alt/total (ref 84); normal 110</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>dde29d2e-09a2-4467-a8f4-2b1d37ce634a</code> | <strong>MAF MD5:</strong> <code>ccab2954b3ad1c9903f36b5d040ba739</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="18" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="81fb5fa9-d901-4faa-b909-376b8676d2bc tcga-38-6178-01a edf80622-aea2-4b50-bb69-691d6708aa83 tcga-38-6178 7fa467f1-d928-4d81-bd0b-68d67a5c18cf tcga-38-6178-01a-11d-1753-08 05748bd3-b359-561d-94e2-4e326c99c584 p.e746_a750del c.2235_2249del da51eb21-62b2-48f5-9f8c-a05248ac3c63 fe22b003-4498-4772-b50f-c597b2b4ba2b.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#18</strong></td><td><code>TCGA-38-6178-01A</code><div class="sub-id"><code>81fb5fa9-d901-4faa-b909-376b8676d2bc</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>7fa467f1-d928-4d81-bd0b-68d67a5c18cf</code><div class="sub-id">TCGA-38-6178-01A-11D-1753-08</div></td><td><code>05748bd3-b359-561d-94e2-4e326c99c584</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>da51eb21-62b2-48f5-9f8c-a05248ac3c63</code><div class="sub-id">fe22b003-4498-4772-b50f-c597b2b4ba2b.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-38-6178 (<code>edf80622-aea2-4b50-bb69-691d6708aa83</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 91/186 alt/total (ref 94); normal 111</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>c32e427c-25d8-473c-a112-d7e54a5536db</code> | <strong>MAF MD5:</strong> <code>32300b0c0810e04ed34f1109861917f6</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="19" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="826d2a46-4a89-4398-8a22-1ba7fefe4a7b tcga-86-8668-01a f2d8b332-2f03-46e5-a9d5-f163972e5fa7 tcga-86-8668 b297dac8-3764-4397-b78b-94bb002cf322 tcga-86-8668-01a-11d-2393-08 b4c20ee3-3ac5-54d7-b1e1-82c2bb87a26a p.l858r c.2573t&gt;g e6eba534-2f5c-4001-a45f-aedea1b56a81 1da0bfb1-2d97-46f0-8936-5f994af9c44d.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#19</strong></td><td><code>TCGA-86-8668-01A</code><div class="sub-id"><code>826d2a46-4a89-4398-8a22-1ba7fefe4a7b</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>b297dac8-3764-4397-b78b-94bb002cf322</code><div class="sub-id">TCGA-86-8668-01A-11D-2393-08</div></td><td><code>b4c20ee3-3ac5-54d7-b1e1-82c2bb87a26a</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>e6eba534-2f5c-4001-a45f-aedea1b56a81</code><div class="sub-id">1da0bfb1-2d97-46f0-8936-5f994af9c44d.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-86-8668 (<code>f2d8b332-2f03-46e5-a9d5-f163972e5fa7</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 27/182 alt/total (ref 155); normal 165</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>323d27d0-2b2a-4dad-a8fe-1d588b0688d3</code> | <strong>MAF MD5:</strong> <code>8d26a36c782cbcc3bdfcadc988a8eaf6</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="20" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="84cb5264-6158-40ec-8b65-f96a4a7d6ce4 tcga-97-8171-01a 397d3f69-1453-4057-b177-8723eec923d1 tcga-97-8171 fa2c3620-7e82-4b12-b135-87986f0f2890 tcga-97-8171-01a-11d-2284-08 dd2c5d6c-a5a8-57c4-9e3c-473649d40ea6 p.e746_a750del c.2235_2249del 3c9219ac-cf5f-4ab9-9bf3-5ff16a4ab1ff dec2238d-eb92-482c-8f72-ad4a9dfb2df1.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#20</strong></td><td><code>TCGA-97-8171-01A</code><div class="sub-id"><code>84cb5264-6158-40ec-8b65-f96a4a7d6ce4</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>fa2c3620-7e82-4b12-b135-87986f0f2890</code><div class="sub-id">TCGA-97-8171-01A-11D-2284-08</div></td><td><code>dd2c5d6c-a5a8-57c4-9e3c-473649d40ea6</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>3c9219ac-cf5f-4ab9-9bf3-5ff16a4ab1ff</code><div class="sub-id">dec2238d-eb92-482c-8f72-ad4a9dfb2df1.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-97-8171 (<code>397d3f69-1453-4057-b177-8723eec923d1</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 41/85 alt/total (ref 44); normal 96</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>843a882c-c77b-4931-b48e-31307ca89b80</code> | <strong>MAF MD5:</strong> <code>cc6b84d08b7b54bbe40e60a815712c65</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="21" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="98687adb-f8e9-4e6e-bc1b-396a3ddfac96 tcga-50-5935-01a 100430c8-1446-45c8-af36-b6dbb3ddd0c1 tcga-50-5935 9570cd02-3339-4805-855a-74ebe429df96 tcga-50-5935-01a-11d-1753-08 cc26a202-7545-5a0f-bc1e-61ce8248dd30 p.e746_a750del c.2236_2250del 800af215-08e1-4911-9976-5c50cadbffa5 f43001d4-b3f7-4cc3-a6f3-ccc7684096d8.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#21</strong></td><td><code>TCGA-50-5935-01A</code><div class="sub-id"><code>98687adb-f8e9-4e6e-bc1b-396a3ddfac96</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2236_2250del</code></div> </td><td><code>9570cd02-3339-4805-855a-74ebe429df96</code><div class="sub-id">TCGA-50-5935-01A-11D-1753-08</div></td><td><code>cc26a202-7545-5a0f-bc1e-61ce8248dd30</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>800af215-08e1-4911-9976-5c50cadbffa5</code><div class="sub-id">f43001d4-b3f7-4cc3-a6f3-ccc7684096d8.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-50-5935 (<code>100430c8-1446-45c8-af36-b6dbb3ddd0c1</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174773delGAATTAAGAGAAGCA</code></div><div><strong>Read Depths:</strong> tumor 22/67 alt/total (ref 44); normal 92</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>cdef3797-3c5d-461f-92c8-1392cdd1781d</code> | <strong>MAF MD5:</strong> <code>1de5e9c2a86852cfdf51e3514b656c96</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="22" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="9cea4206-b460-433b-bf50-29c56cb8e33d tcga-75-7025-01a 681b1176-9676-44d3-892c-1d5dba1ce25b tcga-75-7025 17e3b2f9-1645-4315-9897-31eb2893345c tcga-75-7025-01a-12d-1945-08 f3960fb6-8c98-50f9-8180-1463fb602915 p.e746_a750del c.2235_2249del 67929cd7-8ce6-4fae-b44e-9c123366666e 0f9f350b-96b1-4e90-a103-624ab3289891.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#22</strong></td><td><code>TCGA-75-7025-01A</code><div class="sub-id"><code>9cea4206-b460-433b-bf50-29c56cb8e33d</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>17e3b2f9-1645-4315-9897-31eb2893345c</code><div class="sub-id">TCGA-75-7025-01A-12D-1945-08</div></td><td><code>f3960fb6-8c98-50f9-8180-1463fb602915</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>67929cd7-8ce6-4fae-b44e-9c123366666e</code><div class="sub-id">0f9f350b-96b1-4e90-a103-624ab3289891.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-75-7025 (<code>681b1176-9676-44d3-892c-1d5dba1ce25b</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 28/84 alt/total (ref 56); normal 86</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>dcddb05c-169b-4149-ba9b-840f18bc135d</code> | <strong>MAF MD5:</strong> <code>c9258771ed5b7a11e487dc3f4cb6380f</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="23" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="a3bf3f65-7b44-4993-a126-c76870dbbbac tcga-86-8055-01a 34d8e84e-c3e1-417d-8b9b-8563d9fa0f8e tcga-86-8055 a52fb9cb-1e02-4ee2-b532-e94a2b98c07f tcga-86-8055-01a-11d-2238-08 edb08f47-ed58-59ed-a3df-817b1e7d3666 p.l858r c.2573t&gt;g 1f2ff351-e12c-4493-ae70-ba531a83c479 1c0621b6-795f-4a9c-9e69-efaf9e7ca72c.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#23</strong></td><td><code>TCGA-86-8055-01A</code><div class="sub-id"><code>a3bf3f65-7b44-4993-a126-c76870dbbbac</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>a52fb9cb-1e02-4ee2-b532-e94a2b98c07f</code><div class="sub-id">TCGA-86-8055-01A-11D-2238-08</div></td><td><code>edb08f47-ed58-59ed-a3df-817b1e7d3666</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>1f2ff351-e12c-4493-ae70-ba531a83c479</code><div class="sub-id">1c0621b6-795f-4a9c-9e69-efaf9e7ca72c.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-86-8055 (<code>34d8e84e-c3e1-417d-8b9b-8563d9fa0f8e</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 362/510 alt/total (ref 147); normal 204</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>7a62fd11-7a78-4cde-bacd-b5d2ceb6cdb4</code> | <strong>MAF MD5:</strong> <code>4996dcc05d9f5f0b4cdbfb3e776816af</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="24" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="a5d9be94-1204-49cb-8758-1505d853564c tcga-55-8096-01a 36470b30-a3b3-4d28-851b-918a7ff88011 tcga-55-8096 babd96af-bc23-49ee-b8ef-541bc076c7c4 tcga-55-8096-01a-11d-2238-08 e5f9a01e-357f-5ab9-9060-0bd35edd4e49 p.l858r c.2573t&gt;g 51371120-76d8-4bd2-857d-2bc06c574ad6 acda5160-7899-4a50-88ed-418d55adaea7.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#24</strong></td><td><code>TCGA-55-8096-01A</code><div class="sub-id"><code>a5d9be94-1204-49cb-8758-1505d853564c</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>babd96af-bc23-49ee-b8ef-541bc076c7c4</code><div class="sub-id">TCGA-55-8096-01A-11D-2238-08</div></td><td><code>e5f9a01e-357f-5ab9-9060-0bd35edd4e49</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>51371120-76d8-4bd2-857d-2bc06c574ad6</code><div class="sub-id">acda5160-7899-4a50-88ed-418d55adaea7.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-55-8096 (<code>36470b30-a3b3-4d28-851b-918a7ff88011</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 197/422 alt/total (ref 225); normal 222</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>fbc4dd00-fd9b-4988-aa44-ce1598a2150b</code> | <strong>MAF MD5:</strong> <code>586664f03763b3a8c839ba40b3f7b704</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="25" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="a74f6423-b5d3-4ae2-b61f-3ee04b1073bf tcga-38-4628-01a cc4bd56a-25c5-4c48-b583-ac3aeb778ca6 tcga-38-4628 67bc44b7-92cf-4e8f-a7f6-c53bf34a17c6 tcga-38-4628-01a-01d-1265-08 af386719-dd50-564a-a6f1-eb846a02d785 p.e746_a750del c.2235_2249del 43ef9d3f-7b63-4369-b66c-0bbdf5ca3a84 b1ed9214-b0e9-44be-9517-bd8d771d1d0d.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#25</strong></td><td><code>TCGA-38-4628-01A</code><div class="sub-id"><code>a74f6423-b5d3-4ae2-b61f-3ee04b1073bf</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>67bc44b7-92cf-4e8f-a7f6-c53bf34a17c6</code><div class="sub-id">TCGA-38-4628-01A-01D-1265-08</div></td><td><code>af386719-dd50-564a-a6f1-eb846a02d785</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>43ef9d3f-7b63-4369-b66c-0bbdf5ca3a84</code><div class="sub-id">b1ed9214-b0e9-44be-9517-bd8d771d1d0d.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-38-4628 (<code>cc4bd56a-25c5-4c48-b583-ac3aeb778ca6</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 36/110 alt/total (ref 74); normal 103</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>850c7f34-0d4a-4e8e-a9a3-c4563d4dcb04</code> | <strong>MAF MD5:</strong> <code>79e0b16eb2649928418e1b9ab4a341c6</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="26" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="a9c846b1-9ee0-4f96-85bf-b7dd53c4230c tcga-97-a4m1-01a c0c879f7-c332-4d31-9f7e-a3bf361b36ee tcga-97-a4m1 ce18a849-fa27-4aad-9328-892ddedd7202 tcga-97-a4m1-01a-11d-a24p-08 917b0529-99c0-52dc-a962-e2bdc0594b65 p.l858r c.2573t&gt;g d4156a36-d1e3-4de0-9427-0effe07cbe21 4e80d102-460c-4555-a5b0-8c95a1676712.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#26</strong></td><td><code>TCGA-97-A4M1-01A</code><div class="sub-id"><code>a9c846b1-9ee0-4f96-85bf-b7dd53c4230c</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>ce18a849-fa27-4aad-9328-892ddedd7202</code><div class="sub-id">TCGA-97-A4M1-01A-11D-A24P-08</div></td><td><code>917b0529-99c0-52dc-a962-e2bdc0594b65</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>d4156a36-d1e3-4de0-9427-0effe07cbe21</code><div class="sub-id">4e80d102-460c-4555-a5b0-8c95a1676712.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-97-A4M1 (<code>c0c879f7-c332-4d31-9f7e-a3bf361b36ee</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 17/141 alt/total (ref 124); normal 128</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>f2ea2f9f-3ae3-419c-9529-4d2fc15c37ac</code> | <strong>MAF MD5:</strong> <code>5d735377d0555221b3c9c2a0673a2be4</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="27" data-initial-visible="false" data-variant="p.L858R" data-special="true" data-search="b08432a7-891a-41ee-a2c0-10a994d01e00 tcga-l9-a50w-01a a815619f-dbba-469f-a1f7-dfbd51cd86c5 tcga-l9-a50w fd8a1c72-59fc-4295-9961-1bdffecf3927 tcga-l9-a50w-01a-12d-a397-08 58590071-1cba-5eed-aea2-e3d265d819d7 p.l858r c.2573t&gt;g e59b5718-84f4-48d1-9e79-c7e70b5b4a25 9f7ab8bc-e2a2-4e20-b0c2-ab9cdc605f95.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#27</strong></td><td><code>TCGA-L9-A50W-01A</code><div class="sub-id"><code>b08432a7-891a-41ee-a2c0-10a994d01e00</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> <span class="pill pill-warn">+1 co-EGFR</span></td><td><code>fd8a1c72-59fc-4295-9961-1bdffecf3927</code><div class="sub-id">TCGA-L9-A50W-01A-12D-A397-08</div></td><td><code>58590071-1cba-5eed-aea2-e3d265d819d7</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>e59b5718-84f4-48d1-9e79-c7e70b5b4a25</code><div class="sub-id">9f7ab8bc-e2a2-4e20-b0c2-ab9cdc605f95.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-L9-A50W (<code>a815619f-dbba-469f-a1f7-dfbd51cd86c5</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 41/102 alt/total (ref 61); normal 57</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>711a3a12-064e-4122-863e-89b94b4a9c52</code> | <strong>MAF MD5:</strong> <code>3e4b3794878506c7bee3d3fe1d1888f0</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> p.T790M (c.2369C&gt;T)</div></div></details></td></tr>
+<tr class="witness-row" data-index="28" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="bc0fe45c-3249-46d7-8991-c6888f0b9579 tcga-67-6217-01a 108a71cf-b9db-47cd-aa74-c03ec989b41b tcga-67-6217 cb98d825-668f-4b16-a05e-501e1c94f3fe tcga-67-6217-01a-11d-1753-08 4eb310d5-bb62-56c1-8177-134cb96a9406 p.l858r c.2573t&gt;g 12e50a65-f017-45a8-b176-10ceb6e8d754 12c2f455-6d68-4a09-9cda-c38dfacc5824.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#28</strong></td><td><code>TCGA-67-6217-01A</code><div class="sub-id"><code>bc0fe45c-3249-46d7-8991-c6888f0b9579</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>cb98d825-668f-4b16-a05e-501e1c94f3fe</code><div class="sub-id">TCGA-67-6217-01A-11D-1753-08</div></td><td><code>4eb310d5-bb62-56c1-8177-134cb96a9406</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>12e50a65-f017-45a8-b176-10ceb6e8d754</code><div class="sub-id">12c2f455-6d68-4a09-9cda-c38dfacc5824.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-67-6217 (<code>108a71cf-b9db-47cd-aa74-c03ec989b41b</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 15/100 alt/total (ref 85); normal 97</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>3f3bd303-83e1-4896-8c92-b287da34fbf8</code> | <strong>MAF MD5:</strong> <code>4383f6d1b7a511a186394f5e7f83211c</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="29" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="bc4e0d7d-c267-46d7-a79b-075456fb3b68 tcga-55-8206-01a a214a959-3b21-4f25-a615-383cda7afdff tcga-55-8206 a2c7551a-59c5-4a63-89a6-fbd4beb38789 tcga-55-8206-01a-11d-2238-08 4cd4f52d-d03e-55a3-8728-fa965ec5d6db p.e746_a750del c.2236_2250del a0da73e8-15b2-4fa5-b3b5-6e875f2aa960 478eb139-b068-4828-83da-baf2286cd424.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#29</strong></td><td><code>TCGA-55-8206-01A</code><div class="sub-id"><code>bc4e0d7d-c267-46d7-a79b-075456fb3b68</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2236_2250del</code></div> </td><td><code>a2c7551a-59c5-4a63-89a6-fbd4beb38789</code><div class="sub-id">TCGA-55-8206-01A-11D-2238-08</div></td><td><code>4cd4f52d-d03e-55a3-8728-fa965ec5d6db</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>a0da73e8-15b2-4fa5-b3b5-6e875f2aa960</code><div class="sub-id">478eb139-b068-4828-83da-baf2286cd424.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-55-8206 (<code>a214a959-3b21-4f25-a615-383cda7afdff</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174773delGAATTAAGAGAAGCA</code></div><div><strong>Read Depths:</strong> tumor 14/66 alt/total (ref 52); normal 99</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>a7ebb399-2a4a-4256-804e-0c3df50d7a00</code> | <strong>MAF MD5:</strong> <code>1c8b673d60424c0f42f8e7f97d096871</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="30" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="bf8fdf82-62b4-4b5d-93e7-ce153576fe49 tcga-50-5944-01a 1c339545-c08a-4a77-b8e9-a7e49e53853f tcga-50-5944 a314ee0c-694b-4ac8-b572-ff1fbbda4765 tcga-50-5944-01a-11d-1753-08 7b069171-94e4-5688-afde-ea56b22352aa p.l858r c.2573t&gt;g f4105ab4-e70d-4c92-98a7-6106a3893516 f6ac0d17-0d1c-4997-8f84-3be523f10618.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#30</strong></td><td><code>TCGA-50-5944-01A</code><div class="sub-id"><code>bf8fdf82-62b4-4b5d-93e7-ce153576fe49</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>a314ee0c-694b-4ac8-b572-ff1fbbda4765</code><div class="sub-id">TCGA-50-5944-01A-11D-1753-08</div></td><td><code>7b069171-94e4-5688-afde-ea56b22352aa</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>f4105ab4-e70d-4c92-98a7-6106a3893516</code><div class="sub-id">f6ac0d17-0d1c-4997-8f84-3be523f10618.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-50-5944 (<code>1c339545-c08a-4a77-b8e9-a7e49e53853f</code>) — Acinar Cell Neoplasms</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 25/83 alt/total (ref 58); normal 97</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>c84c2300-f61a-4475-800d-75efe77a7716</code> | <strong>MAF MD5:</strong> <code>394c477faeaf0ac226a89589c5a7f50b</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="31" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="c973dce8-7afe-4670-8663-e06847aa45aa tcga-17-z032-01a d020e685-0435-4b0a-b03f-45853e1c6eed tcga-17-z032 92bc438b-02c1-4b81-a90a-4a1302786a81 tcga-17-z032-01a-01w-0746-08 d11d05ae-2ce8-5255-af4d-f4be46acc2c2 p.e746_a750del c.2235_2249del 506491ed-0214-44bf-bd00-a74a5e8e31b0 cfc4040b-2274-4e37-a6b7-b61bed1b5d95.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#31</strong></td><td><code>TCGA-17-Z032-01A</code><div class="sub-id"><code>c973dce8-7afe-4670-8663-e06847aa45aa</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>92bc438b-02c1-4b81-a90a-4a1302786a81</code><div class="sub-id">TCGA-17-Z032-01A-01W-0746-08</div></td><td><code>d11d05ae-2ce8-5255-af4d-f4be46acc2c2</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>506491ed-0214-44bf-bd00-a74a5e8e31b0</code><div class="sub-id">cfc4040b-2274-4e37-a6b7-b61bed1b5d95.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-17-Z032 (<code>d020e685-0435-4b0a-b03f-45853e1c6eed</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 24/74 alt/total (ref 50); normal 151</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>5dc347a7-4f8f-4040-aa56-e92f99cfc4b3</code> | <strong>MAF MD5:</strong> <code>2524aa588e0823d1bf3c38757976fd4c</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="32" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="cca5449d-6645-4588-a0b5-c1f0b57e5c3b tcga-mp-a4t9-01a 70081320-540f-41d2-8687-ee6d011f8eb0 tcga-mp-a4t9 6b0ebb2a-a75d-4b90-8e19-e2650becbef8 tcga-mp-a4t9-01a-11d-a24p-08 b834ee3a-26c7-586f-8cfc-c26e68827eb7 p.l858r c.2573t&gt;g 6f90c03c-96f5-47dc-85fa-279c634b257e d866327c-a734-4386-b4ca-7a30353baaa8.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#32</strong></td><td><code>TCGA-MP-A4T9-01A</code><div class="sub-id"><code>cca5449d-6645-4588-a0b5-c1f0b57e5c3b</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>6b0ebb2a-a75d-4b90-8e19-e2650becbef8</code><div class="sub-id">TCGA-MP-A4T9-01A-11D-A24P-08</div></td><td><code>b834ee3a-26c7-586f-8cfc-c26e68827eb7</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>6f90c03c-96f5-47dc-85fa-279c634b257e</code><div class="sub-id">d866327c-a734-4386-b4ca-7a30353baaa8.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-MP-A4T9 (<code>70081320-540f-41d2-8687-ee6d011f8eb0</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 62/219 alt/total (ref 157); normal 113</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>5a755819-743c-4b5f-96b4-877aecaca981</code> | <strong>MAF MD5:</strong> <code>4d75bb3cd129e1080614fd5b0e10e799</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="33" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="db809a73-5e5f-42f2-ab05-89bac944411d tcga-55-8506-01a 3ed05070-6633-4de5-9f72-090f93aa2e4d tcga-55-8506 30c689e3-563d-41f1-b08e-9322653e2eb2 tcga-55-8506-01a-11d-2393-08 6058e946-2757-5e48-8d68-ff852faa4333 p.l858r c.2573t&gt;g ad708c2d-e1b7-4e08-be32-b71c26310c41 3cfdf0dc-e83a-4001-87d6-89d570936fcc.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#33</strong></td><td><code>TCGA-55-8506-01A</code><div class="sub-id"><code>db809a73-5e5f-42f2-ab05-89bac944411d</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>30c689e3-563d-41f1-b08e-9322653e2eb2</code><div class="sub-id">TCGA-55-8506-01A-11D-2393-08</div></td><td><code>6058e946-2757-5e48-8d68-ff852faa4333</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>ad708c2d-e1b7-4e08-be32-b71c26310c41</code><div class="sub-id">3cfdf0dc-e83a-4001-87d6-89d570936fcc.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-55-8506 (<code>3ed05070-6633-4de5-9f72-090f93aa2e4d</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 68/144 alt/total (ref 76); normal 145</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>1ad5dca0-8616-4d2d-82b7-05098d7844d9</code> | <strong>MAF MD5:</strong> <code>9f1c60a648cf8483e4a5a3de7d026d67</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="34" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="dc242475-d2c0-4c6a-b227-f6a21a27179a tcga-86-8280-01a d8faa3a7-6b3f-4e69-8c88-184e41055bd7 tcga-86-8280 64c6c8e3-0719-4861-baec-7ab5cfea3807 tcga-86-8280-01a-11d-2284-08 efbc76d2-d3b6-5a7b-8853-3d3c837c6217 p.e746_a750del c.2235_2249del 3307d2d2-5e85-4dfa-8458-959837cab5e1 5bdffdc6-ab76-468b-ab2e-dc69f3e8620c.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#34</strong></td><td><code>TCGA-86-8280-01A</code><div class="sub-id"><code>dc242475-d2c0-4c6a-b227-f6a21a27179a</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2235_2249del</code></div> </td><td><code>64c6c8e3-0719-4861-baec-7ab5cfea3807</code><div class="sub-id">TCGA-86-8280-01A-11D-2284-08</div></td><td><code>efbc76d2-d3b6-5a7b-8853-3d3c837c6217</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>3307d2d2-5e85-4dfa-8458-959837cab5e1</code><div class="sub-id">5bdffdc6-ab76-468b-ab2e-dc69f3e8620c.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-86-8280 (<code>d8faa3a7-6b3f-4e69-8c88-184e41055bd7</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174772delGGAATTAAGAGAAGC</code></div><div><strong>Read Depths:</strong> tumor 25/115 alt/total (ref 89); normal 92</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>73f42f54-7a42-4004-a53f-9c0237d6f6cb</code> | <strong>MAF MD5:</strong> <code>4fc751e47cf4d0e5aa98417a8a1dfe67</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="35" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="efd3f14f-f785-4aec-9efd-6dd8e9c41eba tcga-91-6835-01a 2f09479f-87fc-4c34-8e2c-333e970a3681 tcga-91-6835 8120c5eb-2917-4053-a5e5-aad53ff45da9 tcga-91-6835-01a-11d-1855-08 40976065-f2a9-5a82-a577-8c590b8033b6 p.l858r c.2573t&gt;g 1f1e44a3-bf1f-4017-a82f-b27a7d434b33 f8168075-6514-433c-ad01-7feb66970972.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#35</strong></td><td><code>TCGA-91-6835-01A</code><div class="sub-id"><code>efd3f14f-f785-4aec-9efd-6dd8e9c41eba</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>8120c5eb-2917-4053-a5e5-aad53ff45da9</code><div class="sub-id">TCGA-91-6835-01A-11D-1855-08</div></td><td><code>40976065-f2a9-5a82-a577-8c590b8033b6</code><div class="sub-id">Callers: muse,mutect2</div></td><td><code>1f1e44a3-bf1f-4017-a82f-b27a7d434b33</code><div class="sub-id">f8168075-6514-433c-ad01-7feb66970972.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-91-6835 (<code>2f09479f-87fc-4c34-8e2c-333e970a3681</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 14/118 alt/total (ref 104); normal 112</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>46fde1ad-2cea-483b-ae64-f1226a732b9a</code> | <strong>MAF MD5:</strong> <code>eacd44fc6a6a392d4ab46b6da3293049</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="36" data-initial-visible="false" data-variant="p.L858R" data-special="false" data-search="fb517d7c-4c4d-41f4-85f4-79a28149d3a6 tcga-17-z047-01a abf6eb5f-fa06-4032-8cff-c8522b0a3c9a tcga-17-z047 2c04cfa8-6e99-46fa-82ad-36fb96e5ffef tcga-17-z047-01a-01w-0747-08 d191dd2e-6a8f-5b04-afce-ca20bc261e69 p.l858r c.2573t&gt;g fbf508aa-eddc-4680-b831-ba8724e6dfff 5b0b7840-ba24-4aab-bbaf-a26e6ef0b993.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#36</strong></td><td><code>TCGA-17-Z047-01A</code><div class="sub-id"><code>fb517d7c-4c4d-41f4-85f4-79a28149d3a6</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> </td><td><code>2c04cfa8-6e99-46fa-82ad-36fb96e5ffef</code><div class="sub-id">TCGA-17-Z047-01A-01W-0747-08</div></td><td><code>d191dd2e-6a8f-5b04-afce-ca20bc261e69</code><div class="sub-id">Callers: muse,mutect2</div></td><td><code>fbf508aa-eddc-4680-b831-ba8724e6dfff</code><div class="sub-id">5b0b7840-ba24-4aab-bbaf-a26e6ef0b993.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-17-Z047 (<code>abf6eb5f-fa06-4032-8cff-c8522b0a3c9a</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 30/374 alt/total (ref 344); normal 304</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>4e7c774d-e762-41a3-8d6a-b47c84575f0f</code> | <strong>MAF MD5:</strong> <code>d9c616ac78f30783841715f94317b71f</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="37" data-initial-visible="false" data-variant="p.L858R" data-special="true" data-search="fb9c6881-c503-45c8-b17a-b47a9e8d9003 tcga-71-8520-01a 37884d39-64e8-4242-b6bd-4c0a1daa21cd tcga-71-8520 e59ec685-642c-4c77-93ad-aa88141e71a3 tcga-71-8520-01a-11d-2393-08 8e5c512e-6b47-51eb-8ba6-5ae1149b1974 p.l858r c.2573t&gt;g 4d2b3e1f-f8d0-4188-b3bf-7f2ea01620e3 7a9a3cf4-4c75-4c90-beac-eccefc9690da.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#37</strong></td><td><code>TCGA-71-8520-01A</code><div class="sub-id"><code>fb9c6881-c503-45c8-b17a-b47a9e8d9003</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> <span class="pill pill-warn">+1 co-EGFR</span></td><td><code>e59ec685-642c-4c77-93ad-aa88141e71a3</code><div class="sub-id">TCGA-71-8520-01A-11D-2393-08</div></td><td><code>8e5c512e-6b47-51eb-8ba6-5ae1149b1974</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>4d2b3e1f-f8d0-4188-b3bf-7f2ea01620e3</code><div class="sub-id">7a9a3cf4-4c75-4c90-beac-eccefc9690da.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-71-8520 (<code>37884d39-64e8-4242-b6bd-4c0a1daa21cd</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 105/199 alt/total (ref 94); normal 110</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>0deb7230-cf38-4b53-8503-7238ce7a1209</code> | <strong>MAF MD5:</strong> <code>108820a25c6debcffcf0844a70d4200a</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> p.L62R (c.185T&gt;G)</div></div></details></td></tr>
+<tr class="witness-row" data-index="38" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="fc511a67-5383-4877-aeef-36c0b7934b77 tcga-49-4501-01a 0780eb43-d5b5-4c3d-9825-beacba5cc723 tcga-49-4501 0c53bb1b-5e6f-44a8-97a0-f89d43e0e789 tcga-49-4501-01a-01d-1265-08 62ce9782-5410-50f8-a490-b1f3fb7c0702 p.e746_a750del c.2236_2250del e07a5517-ab7e-4367-971b-7719c3273a1c b342cdbc-5af1-4ed9-baf3-d7c129ee75a7.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#38</strong></td><td><code>TCGA-49-4501-01A</code><div class="sub-id"><code>fc511a67-5383-4877-aeef-36c0b7934b77</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2236_2250del</code></div> </td><td><code>0c53bb1b-5e6f-44a8-97a0-f89d43e0e789</code><div class="sub-id">TCGA-49-4501-01A-01D-1265-08</div></td><td><code>62ce9782-5410-50f8-a490-b1f3fb7c0702</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>e07a5517-ab7e-4367-971b-7719c3273a1c</code><div class="sub-id">b342cdbc-5af1-4ed9-baf3-d7c129ee75a7.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-49-4501 (<code>0780eb43-d5b5-4c3d-9825-beacba5cc723</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174773delGAATTAAGAGAAGCA</code></div><div><strong>Read Depths:</strong> tumor 27/142 alt/total (ref 115); normal 75</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>3f0cb3e3-47ac-433e-af67-ae24596e7d6b</code> | <strong>MAF MD5:</strong> <code>9bf9332e6bfac48f9ae71e2e1f69fb91</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+<tr class="witness-row" data-index="39" data-initial-visible="false" data-variant="p.L858R" data-special="true" data-search="feec7fa2-1f3f-4cbe-a89c-df01d13a9299 tcga-38-4627-01a d717fa33-3c91-4ced-89c6-79ff5542f04c tcga-38-4627 abef97da-d7db-495f-b594-fa66577becd6 tcga-38-4627-01a-01d-1553-08 6515446d-ce0e-5ea8-a508-23274bb016bb p.l858r c.2573t&gt;g b883874a-5435-4fa9-af0d-42bf7056184c ca88b9f7-4be5-4972-9635-7e1e0daffd87.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#39</strong></td><td><code>TCGA-38-4627-01A</code><div class="sub-id"><code>feec7fa2-1f3f-4cbe-a89c-df01d13a9299</code></div> </td><td><span class="pill pill-var">p.L858R</span><div class="sub-id"><code>c.2573T&gt;G</code></div> <span class="pill pill-warn">+1 co-EGFR</span></td><td><code>abef97da-d7db-495f-b594-fa66577becd6</code><div class="sub-id">TCGA-38-4627-01A-01D-1553-08</div></td><td><code>6515446d-ce0e-5ea8-a508-23274bb016bb</code><div class="sub-id">Callers: muse,mutect2,varscan2</div></td><td><code>b883874a-5435-4fa9-af0d-42bf7056184c</code><div class="sub-id">ca88b9f7-4be5-4972-9635-7e1e0daffd87.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-38-4627 (<code>d717fa33-3c91-4ced-89c6-79ff5542f04c</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55191822T&gt;G</code></div><div><strong>Read Depths:</strong> tumor 18/134 alt/total (ref 116); normal 133</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>21d49f80-fd21-421f-a3bd-5f39b1ac3e48</code> | <strong>MAF MD5:</strong> <code>4e88c70ea882efebd27c7af98f288d4a</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> p.L62R (c.185T&gt;G)</div></div></details></td></tr>
+<tr class="witness-row" data-index="40" data-initial-visible="false" data-variant="p.E746_A750del" data-special="false" data-search="ff0ad6a3-94e2-4dea-a9c8-7c790d65e56e tcga-97-8552-01a 9ca1a26c-82e0-48b3-b3bb-2ed57086eeb1 tcga-97-8552 13b04678-315f-421b-b0b9-fee46e80f243 tcga-97-8552-01a-11d-2393-08 b6a6f3f2-7f17-5046-af4f-473bb789bc8c p.e746_a750del c.2236_2250del 22bafb55-4327-4fbc-8443-0587fb49d8fd c534284e-9bde-42ff-87c3-effe204a4030.wxs.aliquot_ensemble_masked.maf.gz" hidden="hidden"><td><strong>#40</strong></td><td><code>TCGA-97-8552-01A</code><div class="sub-id"><code>ff0ad6a3-94e2-4dea-a9c8-7c790d65e56e</code></div> </td><td><span class="pill pill-var">p.E746_A750del</span><div class="sub-id"><code>c.2236_2250del</code></div> </td><td><code>13b04678-315f-421b-b0b9-fee46e80f243</code><div class="sub-id">TCGA-97-8552-01A-11D-2393-08</div></td><td><code>b6a6f3f2-7f17-5046-af4f-473bb789bc8c</code><div class="sub-id">Callers: mutect2,pindel,varscan2</div></td><td><code>22bafb55-4327-4fbc-8443-0587fb49d8fd</code><div class="sub-id">c534284e-9bde-42ff-87c3-effe204a4030.wxs.aliquot_ensemble_masked.maf.gz</div></td><td><details><summary>Inspect</summary><div class="detail-grid"><div><strong>Case:</strong> TCGA-97-8552 (<code>9ca1a26c-82e0-48b3-b3bb-2ed57086eeb1</code>) — Adenomas and Adenocarcinomas</div><div><strong>Locus (GRCh38 / ENST00000275493):</strong> <code>chr7:g.55174773delGAATTAAGAGAAGCA</code></div><div><strong>Read Depths:</strong> tumor 16/92 alt/total (ref 76); normal 94</div><div><strong>Call &amp; Coverage:</strong> POSITIVE | POSITIVE_ONLY_OPEN_ACCESS_MAF | linkage: UNIQUE_MATCH</div><div><strong>Matched Normal Aliquot:</strong> <code>1aa4f175-2bd1-497d-b7b6-3bf9204aa5ff</code> | <strong>MAF MD5:</strong> <code>bd4d49a2350c2f61ef48c1a577545cec</code></div><div><strong>Co-occurring EGFR variants on same aliquot:</strong> None</div></div></details></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="sec-verify">
+      <h2 id="sec-verify">4. Independent Verification Controls &amp; Regression Context</h2>
+      <div class="grid-2">
+        <div class="card">
+          <span class="badge badge-interp">Reviewer Verification</span>
+          <h3>Offline Certificate Verification &amp; Reconciliation</h3>
+          <p>Verify the Ed25519 signature and reconstruct the answer purely from SQLite queries against the frozen snapshot:</p>
+          <pre>EGIS_OFFLINE=1 .venv/bin/evidence verify --snapshot snapshots/real/gdc_tcga_luad_v3 --certificate artifacts/gdc-luad-v3-molecular-milestone/supported_certificate.json</pre>
+          <p><strong>Project-authored reconciliation code &amp; report</strong> <span class="badge badge-warn">Project-authored script — not an external audit</span>:</p>
+          <ul>
+            <li>Script: <code>scripts/independent_recheck_gdc_v3.py</code></li>
+            <li>Report: <code>artifacts/gdc-luad-v3-independent-recheck-v1/independent_recheck_report.json</code> (<code>all_checks_passed=True</code>)</li>
+            <li>Human Reviewer Guide: <code>docs/HUMAN_REVIEWER_BRIEF.md</code></li>
+          </ul>
+          <div class="callout-warn">
+            <strong>Replay Boundary:</strong> Passing SQL replay proves EGIS faithfully executed its deterministic rules over the frozen <code>data.sqlite</code> snapshot and that the Ed25519 signature matches <code>keys/public_key.pem</code>. It does <strong>not</strong> prove biological correctness, clinical validity, or completeness of upstream GDC data.
+          </div>
+        </div>
+        <div class="card">
+          <span class="badge badge-derived">Development Regression</span>
+          <h3>Last Reported Test &amp; Suite Status <span class="badge badge-warn">Development regression — not an external audit</span></h3>
+          <ul>
+            <li><strong>Unit &amp; integration tests (<code>PROOF.md</code>):</strong> <code>69 passed</code></li>
+            <li><strong>Replay mutation resistance (<code>PROOF.md</code>):</strong> <code>kill_rate: 1.0 (`8/8` mutations killed)</code></li>
+            <li><strong>48-case suite (development regression):</strong> 42 / 42 executed passed, 0 <code>NOT_RUN</code>, 6 pre-designated <code>BLOCKED</code>, 23 / 23 <code>CRITICAL</code> passed, 0 determinism failures across 3&times; runs (<code>PASS_REGRESSION_SUITE</code>).</li>
+            <li><strong>Source report:</strong> <code>artifacts/regression-exam-grading-v2-post-gdc-v3/grading_report.json</code> (evaluator answer key was previously inspected; classified strictly as development regression).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="sec-limits">
+      <h2 id="sec-limits">5. Limitations, Gaps &amp; Offline Read-Only Design</h2>
+      <div class="callout-warn">
+        <strong>Research use only — not clinically validated; not for patient-care decisions.</strong> EGIS is neither clinically validated, externally audited, nor production-ready.
+      </div>
+      <ul>
+        <li>Molecular variant ingest is explicitly scoped to open-access GDC /ssm_occurrences in gene EGFR (GRCh38, canonical transcript ENST00000275493); other genes (e.g. KRAS, ALK) are not ingested in this snapshot.</li><li>GDC open-access WXS Masked Somatic Mutation MAFs and /ssm_occurrences report called positive masked somatic variants only; explicit wild-type (NEGATIVE) calls and locus-level sequencing depth at unmutated sites are not provided.</li><li>Controlled-access BAM/VCF/MAF files, pathology_reports, and cross-cohort GDC-to-PDC identity mappings are omitted.</li>
+        <li>Assay/QC metadata, broad negative-call locus coverage, CPTAC/PDC biospecimen integration with governed identity mappings, third-party blind evaluation, and external production key custody (replacing the checked-in <code>keys/</code> demo keypair) remain incomplete.</li>
+        <li><strong>UI Security &amp; Isolation:</strong> Strictly read-only and offline (<code>default-src 'none'</code>, zero outbound requests, HTML/JS output escaped, never accesses private signing keys or evaluator answer keys).</li>
+      </ul>
+      <h3>Local Launch &amp; Regeneration Commands</h3>
+      <pre>.venv/bin/python scripts/run_verifier_ui.py --out artifacts/human-verifier-ui
+.venv/bin/python scripts/run_verifier_ui.py --out artifacts/human-verifier-ui --serve --port 8765</pre>
+    </section>
+  </main>
+
+  <footer>
+    Generated purely from local frozen artifacts by <code>cancer_evidence.verifier_ui</code> (v1.0.0). Read-only offline mode.
+  </footer>
+
+  <script>
+(function() {
+  var rows = Array.prototype.slice.call(document.querySelectorAll('tr.witness-row'));
+  var searchInput = document.getElementById('witness-search');
+  var statusEl = document.getElementById('witness-filter-status');
+  var toggleAllBtn = document.getElementById('toggle-all-witnesses');
+  var filterBtns = Array.prototype.slice.call(document.querySelectorAll('[data-filter-mode]'));
+  var showAll = false;
+  var activeMode = 'all';
+
+  function updateView() {
+    var q = (searchInput ? searchInput.value : '').trim().toLowerCase();
+    var isFiltering = (q.length > 0) || (activeMode !== 'all');
+    var matchedCount = 0;
+    var shownCount = 0;
+
+    rows.forEach(function(row) {
+      var v = row.getAttribute('data-variant') || '';
+      var sp = row.getAttribute('data-special') === 'true';
+      var blob = row.getAttribute('data-search') || '';
+      var modeOk = (
+        activeMode === 'all' ||
+        (activeMode === 'p.L858R' && v === 'p.L858R') ||
+        (activeMode === 'p.E746_A750del' && v === 'p.E746_A750del') ||
+        (activeMode === 'special' && sp)
+      );
+      var searchOk = (!q || blob.indexOf(q) !== -1);
+      var matches = modeOk && searchOk;
+      if (matches) {
+        matchedCount += 1;
+        var visible = isFiltering || showAll || (row.getAttribute('data-initial-visible') === 'true');
+        if (visible) {
+          row.removeAttribute('hidden');
+          shownCount += 1;
+        } else {
+          row.setAttribute('hidden', 'hidden');
+        }
+      } else {
+        row.setAttribute('hidden', 'hidden');
+      }
+    });
+
+    if (statusEl) {
+      statusEl.textContent = 'Showing ' + shownCount + ' of ' + matchedCount + ' matching witnesses (' + rows.length + ' total witness samples).';
+    }
+    if (toggleAllBtn) {
+      toggleAllBtn.style.display = isFiltering ? 'none' : 'inline-block';
+      toggleAllBtn.textContent = showAll ? 'Collapse to first 5 witnesses' : ('Show all ' + rows.length + ' witnesses');
+      toggleAllBtn.setAttribute('aria-expanded', showAll ? 'true' : 'false');
+    }
+  }
+
+  filterBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      activeMode = btn.getAttribute('data-filter-mode') || 'all';
+      filterBtns.forEach(function(b) {
+        b.classList.toggle('btn-active', b === btn);
+        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+      });
+      updateView();
+    });
+  });
+
+  if (searchInput) {
+    searchInput.addEventListener('input', updateView);
+  }
+  if (toggleAllBtn) {
+    toggleAllBtn.addEventListener('click', function() {
+      showAll = !showAll;
+      updateView();
+    });
+  }
+  updateView();
+})();
+</script>
+</body>
+</html>

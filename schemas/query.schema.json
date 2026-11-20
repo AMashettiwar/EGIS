@@ -1,23 +1,57 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Structured evidence query",
-  "type": "object",
-  "required": ["operation"],
+  "additionalProperties": true,
   "properties": {
-    "operation": {"enum": ["count_entities", "assay_availability", "assay_overlap", "file_lineage", "compare_inventories"]},
-    "entity_level": {"enum": ["case", "sample", "aliquot", "assay", "file"]},
-    "denominator_mode": {"enum": ["left", "eligible", "universe"]},
     "cohort_filter": {
-      "type": "object",
+      "additionalProperties": false,
       "properties": {
-        "source": {"type": "string"},
-        "project_id": {"type": "string"},
-        "study_id": {"type": "string"},
-        "eligibility_field": {"type": "string"},
-        "eligibility_value": {}
+        "eligibility_field": {
+          "type": "string"
+        },
+        "eligibility_value": {},
+        "project_id": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
+        },
+        "study_id": {
+          "type": "string"
+        }
       },
-      "additionalProperties": false
+      "type": "object"
+    },
+    "denominator_mode": {
+      "enum": [
+        "left",
+        "eligible",
+        "universe"
+      ]
+    },
+    "entity_level": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "count_entities",
+        "assay_availability",
+        "assay_overlap",
+        "file_lineage",
+        "compare_inventories",
+        "cohort_count",
+        "claim_verification",
+        "cross_source_overlap_count",
+        "entity_attribute_query",
+        "out_of_scope_request"
+      ]
     }
   },
-  "additionalProperties": true
+  "required": [
+    "operation"
+  ],
+  "title": "Structured evidence query",
+  "type": "object"
 }

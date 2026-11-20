@@ -1,6 +1,9 @@
 __pycache__/
 *.py[cod]
 .pytest_cache/
+.venv/
+cancer-evidence-exam/
+cancer-evidence-exam.zip
 artifacts/demo/
 artifacts/gate-demo/
 artifacts/verification-demo/
@@ -8,6 +11,14 @@ artifacts/synthetic-demo/
 artifacts/verified-demo/
 artifacts/audit-demo/
 artifacts/final-audit/
+artifacts/cleanroom-holdout-benchmark/
+artifacts/blind-exam-run/
+artifacts/blind-exam-grading/
+artifacts/cor-001-blind-run/
+artifacts/regression-exam-run/
+artifacts/regression-exam-run-v2-post-gdc-v3/
+artifacts/regression-exam-grading/
+artifacts/regression-exam-grading-v2-post-gdc-v3/
 *.egg-info/
 build/
 *.sqlite-wal

@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 from cancer_evidence.certificate import issue_certificate
-from cancer_evidence.fixture import create_synthetic_snapshot
+from cancer_evidence.fixture import create_synthetic_snapshot, synthetic_bundle
 
 
 class CliTests(unittest.TestCase):
@@ -46,4 +46,32 @@ class CliTests(unittest.TestCase):
             certificate.write_text(json.dumps(data), encoding="utf-8")
             result = subprocess.run([sys.executable, "-m", "cancer_evidence", "verify", "--snapshot", str(snapshot), "--certificate", str(certificate)], capture_output=True, text=True, env=self._env())
             self.assertNotEqual(result.returncode, 0)
+
+    def test_snapshot_import_creates_verifiable_snapshot(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            bundle = synthetic_bundle()
+            bundle_path = root / "bundle.json"
+            bundle_path.write_text(json.dumps(bundle), encoding="utf-8")
+            snapshot = root / "imported-snapshot"
+            certificate = root / "certificate.json"
+            imp = subprocess.run(
+                [sys.executable, "-m", "cancer_evidence", "snapshot", "import", "--bundle", str(bundle_path), "--out", str(snapshot)],
+                check=True,
+                capture_output=True,
+                text=True,
+                env=self._env(),
+            )
+            manifest = json.loads(imp.stdout)
+            self.assertTrue(manifest["complete"])
+            self.assertEqual(manifest["publication"], "READY")
+            issue_certificate(snapshot, {"operation": "count_entities", "selector": {"source": "gdc"}}, certificate)
+            ver = subprocess.run(
+                [sys.executable, "-m", "cancer_evidence", "verify", "--snapshot", str(snapshot), "--certificate", str(certificate)],
+                check=True,
+                capture_output=True,
+                text=True,
+                env=self._env(),
+            )
+            self.assertTrue(json.loads(ver.stdout)["valid"])
 

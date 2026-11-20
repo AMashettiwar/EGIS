@@ -1,24 +1,70 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Proof-carrying answer certificate",
-  "type": "object",
-  "required": ["certificate_version", "engine", "rule_version", "query", "query_sha256", "snapshot_id", "snapshot_manifest_sha256", "snapshot_sha256", "derivation", "evidence_scope", "result", "certificate_sha256", "signature", "signature_algorithm", "verification_public_key"],
+  "additionalProperties": true,
   "properties": {
-    "certificate_version": {"type": "string"},
-    "engine": {"const": "cancer-evidence-engine"},
-    "rule_version": {"type": "string"},
-    "query": {"type": "object"},
-    "query_sha256": {"type": "string"},
-    "snapshot_id": {"type": "string"},
-    "snapshot_manifest_sha256": {"type": "string"},
-    "snapshot_sha256": {"type": "string"},
-    "derivation": {"type": "object"},
-    "evidence_scope": {"type": "object"},
-    "result": {"type": "object"},
-    "certificate_sha256": {"type": "string"},
-    "signature": {"type": "string"},
-    "signature_algorithm": {"const": "Ed25519"},
-    "verification_public_key": {"type": "string"}
+    "certificate_sha256": {
+      "type": "string"
+    },
+    "certificate_version": {
+      "type": "string"
+    },
+    "derivation": {
+      "type": "object"
+    },
+    "engine": {
+      "const": "cancer-evidence-engine"
+    },
+    "evidence_scope": {
+      "type": "object"
+    },
+    "query": {
+      "type": "object"
+    },
+    "query_sha256": {
+      "type": "string"
+    },
+    "result": {
+      "type": "object"
+    },
+    "rule_version": {
+      "type": "string"
+    },
+    "signature": {
+      "type": "string"
+    },
+    "signature_algorithm": {
+      "const": "Ed25519"
+    },
+    "snapshot_id": {
+      "type": "string"
+    },
+    "snapshot_manifest_sha256": {
+      "type": "string"
+    },
+    "snapshot_sha256": {
+      "type": "string"
+    },
+    "verification_public_key": {
+      "type": "string"
+    }
   },
-  "additionalProperties": true
+  "required": [
+    "certificate_version",
+    "engine",
+    "rule_version",
+    "query",
+    "query_sha256",
+    "snapshot_id",
+    "snapshot_manifest_sha256",
+    "snapshot_sha256",
+    "derivation",
+    "evidence_scope",
+    "result",
+    "certificate_sha256",
+    "signature",
+    "signature_algorithm",
+    "verification_public_key"
+  ],
+  "title": "Proof-carrying answer certificate",
+  "type": "object"
 }

@@ -1,0 +1,19 @@
+{
+  "cohort_id": "tcga_luad_gdc_r46_biospecimen_v2",
+  "denominator_basis": "tcga_luad_gdc_r46_primary_tumor_samples_with_completed_EGFR_assay",
+  "entity_level": "sample",
+  "operation": "cohort_count",
+  "predicate": {
+    "assay_status": "COMPLETED",
+    "biomarker": "EGFR_ACTIVATING",
+    "positive_results_in": [
+      "L858R_POSITIVE",
+      "Ex19del_POSITIVE"
+    ],
+    "project_id": "TCGA-LUAD",
+    "qc_status": "PASS",
+    "sample_type": "Primary Tumor",
+    "source": "gdc"
+  },
+  "snapshot_id": "gdc-89322a7056bca577"
+}

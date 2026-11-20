@@ -1,0 +1,50 @@
+{
+  "cohort_id": "tcga_luad_gdc_r46_biospecimen_v2",
+  "egis_abstaining_comparison": {
+    "reason_code": "INCOMPLETE_SNAPSHOT",
+    "replay_valid": true,
+    "status": "UNKNOWN",
+    "witness_count": 0
+  },
+  "egis_supported_comparison": {
+    "denominator_basis": "tcga_luad_gdc_r46_primary_tumor_samples",
+    "denominator_count": 1075,
+    "entity_level": "sample",
+    "exact_witness_set_match": true,
+    "numerator_count": 529,
+    "percentage": 49.2093023255814,
+    "reason_code": "NONE",
+    "replay_valid": true,
+    "status": "SUPPORTED",
+    "witness_count": 529
+  },
+  "generated_at_utc": "2026-11-18T23:50:32+00:00",
+  "independent_raw_counts": {
+    "aliquots_total": 7978,
+    "all_samples_with_qualifying_file": 590,
+    "cases": 585,
+    "orphan_aliquot_links": 0,
+    "orphan_sample_links": 0,
+    "primary_tumor_samples": 1075,
+    "primary_tumor_samples_with_qualifying_file": 529,
+    "primary_tumor_samples_without_qualifying_file": 546,
+    "qualifying_open_rnaseq_tsv_released_files": 601,
+    "samples_by_type": {
+      "Blood Derived Normal": 425,
+      "FFPE Scrolls": 4,
+      "Primary Tumor": 1075,
+      "Recurrent Tumor": 3,
+      "Solid Tissue Normal": 274
+    },
+    "samples_total": 1781,
+    "scoped_files_fetched": 601
+  },
+  "mismatches": [],
+  "network_mode": "disabled_socket_and_subprocess_guard",
+  "raw_content_sha256_verified": true,
+  "reconciled": true,
+  "report_version": "1.0.0",
+  "snapshot_dir": "snapshots/real/gdc_tcga_luad_v2",
+  "snapshot_id": "gdc-89322a7056bca577",
+  "upstream_data_release": "Data Release 46.0 - August 10, 2026"
+}

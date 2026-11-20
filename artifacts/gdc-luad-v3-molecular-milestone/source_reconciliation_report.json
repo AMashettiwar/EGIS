@@ -1,0 +1,65 @@
+{
+  "cohort_id": "tcga_luad_gdc_r46_molecular_v3",
+  "egis_abstaining_negative_comparison": {
+    "reason_code": "INCOMPLETE_SNAPSHOT",
+    "replay_valid": true,
+    "status": "UNKNOWN",
+    "witness_count": 0
+  },
+  "egis_abstaining_unacquired_gene_comparison": {
+    "reason_code": "INCOMPLETE_SNAPSHOT",
+    "replay_valid": true,
+    "status": "UNKNOWN",
+    "witness_count": 0
+  },
+  "egis_supported_comparison": {
+    "denominator_basis": "tcga_luad_gdc_r46_wxs_masked_ssm_primary_tumor_samples",
+    "denominator_count": 571,
+    "entity_level": "sample",
+    "exact_aliquot_id_match": true,
+    "exact_evidence_refs_match": true,
+    "exact_file_id_match": true,
+    "exact_variant_record_id_match": true,
+    "exact_witness_set_match": true,
+    "numerator_count": 40,
+    "percentage": 7.005253940455342,
+    "reason_code": "NONE",
+    "replay_valid": true,
+    "status": "SUPPORTED",
+    "witness_count": 40
+  },
+  "generated_at_utc": "2026-11-19T00:41:37+00:00",
+  "independent_raw_counts": {
+    "aliquots_total": 7978,
+    "cases": 585,
+    "egfr_any_variant_primary_tumor_samples": 78,
+    "egfr_ssm_occurrences_multiply_matched": 0,
+    "egfr_ssm_occurrences_total": 93,
+    "egfr_ssm_occurrences_unmatched": 0,
+    "primary_tumor_samples": 1075,
+    "samples_total": 1781,
+    "snv_orphan_aliquot_links": 0,
+    "snv_orphan_sample_links": 0,
+    "target_canonical_egfr_samples": 40,
+    "target_canonical_egfr_variant_breakdown": {
+      "p.E746_A750del": 18,
+      "p.L858R": 22
+    },
+    "target_lineage_evidence_refs_count": 160,
+    "target_ssm_occurrence_ids_count": 40,
+    "target_tumor_aliquot_ids_count": 40,
+    "target_wxs_maf_file_ids_count": 40,
+    "wxs_masked_ssm_maf_files": 618,
+    "wxs_masked_ssm_primary_tumor_aliquots": 612,
+    "wxs_masked_ssm_primary_tumor_samples": 571
+  },
+  "mismatches": [],
+  "network_mode": "disabled_socket_and_subprocess_guard",
+  "normalized_content_sha256_verified": true,
+  "raw_content_sha256_verified": true,
+  "reconciled": true,
+  "report_version": "1.0.0",
+  "snapshot_dir": "snapshots/real/gdc_tcga_luad_v3",
+  "snapshot_id": "gdc-8d5ccf3bc2893baa",
+  "upstream_data_release": "Data Release 46.0 - August 10, 2026"
+}

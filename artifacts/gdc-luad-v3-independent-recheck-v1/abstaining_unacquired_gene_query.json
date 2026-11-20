@@ -1,0 +1,21 @@
+{
+  "cohort_id": "tcga_luad_gdc_r46_molecular_v3",
+  "denominator_basis": "tcga_luad_gdc_r46_wxs_masked_ssm_primary_tumor_samples",
+  "entity_level": "sample",
+  "operation": "cohort_count",
+  "predicate": {
+    "access": "open",
+    "call_status": "POSITIVE",
+    "data_category": "Simple Nucleotide Variation",
+    "data_format": "MAF",
+    "data_type": "Masked Somatic Mutation",
+    "experimental_strategy": "WXS",
+    "gene_symbol": "KRAS",
+    "hgvsp_short": "p.G12C",
+    "project_id": "TCGA-LUAD",
+    "sample_type": "Primary Tumor",
+    "source": "gdc",
+    "state": "released"
+  },
+  "snapshot_id": "gdc-8d5ccf3bc2893baa"
+}

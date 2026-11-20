@@ -13,8 +13,21 @@ SCHEMAS: dict[str, dict[str, Any]] = {
         "type": "object",
         "required": ["operation"],
         "properties": {
-            "operation": {"enum": ["count_entities", "assay_availability", "assay_overlap", "file_lineage", "compare_inventories"]},
-            "entity_level": {"enum": ["case", "sample", "aliquot", "assay", "file"]},
+            "operation": {
+                "enum": [
+                    "count_entities",
+                    "assay_availability",
+                    "assay_overlap",
+                    "file_lineage",
+                    "compare_inventories",
+                    "cohort_count",
+                    "claim_verification",
+                    "cross_source_overlap_count",
+                    "entity_attribute_query",
+                    "out_of_scope_request",
+                ]
+            },
+            "entity_level": {"type": ["string", "null"]},
             "denominator_mode": {"enum": ["left", "eligible", "universe"]},
             "cohort_filter": {"type": "object", "properties": {"source": {"type": "string"}, "project_id": {"type": "string"}, "study_id": {"type": "string"}, "eligibility_field": {"type": "string"}, "eligibility_value": {}}, "additionalProperties": False},
         },

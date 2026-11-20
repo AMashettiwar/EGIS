@@ -1,0 +1,387 @@
+{
+  "adapter_version": "gdc-public-api-v2",
+  "cohort_id": "tcga_luad_gdc_r46_biospecimen_v2",
+  "complete": true,
+  "coverage": {
+    "gdc": {
+      "aliquot_count": 7978,
+      "cohort_id": "tcga_luad_gdc_r46_biospecimen_v2",
+      "complete": true,
+      "expected_total": 585,
+      "page_count": 3,
+      "retrieved_count": 585,
+      "sample_count": 1781,
+      "scope": "TCGA-LUAD",
+      "scoped_file_count": 601,
+      "scoped_files_expected_total": 601
+    }
+  },
+  "derivation": {
+    "input": "raw.json",
+    "input_sha256": "89322a7056bca57755b488b2057fe804b53ca81ab8c47481618b2765513614b5",
+    "output": "normalized.json",
+    "output_sha256": "792664de5bc0293f0870a54b13799855b7123481ec28e22b2d869ccca600e785",
+    "version": "raw-to-normalized-v1"
+  },
+  "fixture_id": null,
+  "manifest_sha256": "82209334a25566a21a75277922c4b8ef17b0b9987dcd787f6aeeaf6cf119e2cd",
+  "normalized_content_sha256": "792664de5bc0293f0870a54b13799855b7123481ec28e22b2d869ccca600e785",
+  "provenance_metadata": {
+    "freeze_timestamp": "2026-11-18T23:48:54+00:00",
+    "integrity_errors": [],
+    "is_frozen": true,
+    "known_coverage_gaps": [
+      "Files table is explicitly scoped to open-access RNA-Seq Gene Expression Quantification files (601 files out of 36,740 total TCGA-LUAD project files); controlled-access BAM/VCF/MAF and other strategies are omitted.",
+      "Assay execution records (assays), QC status, and somatic biomarker/variant calls are NOT acquired (assays table = PARTIAL_INGEST, 0 rows); file availability must never be inferred as assay completion, QC pass, or biomarker positivity.",
+      "Separate patient table, tumor_purity percentages, sample collection timestamps, pathology staging reports, and cross-cohort identity mappings are not acquired in this snapshot."
+    ],
+    "named_universes": {
+      "tcga_luad_gdc_r46_all_samples": "All distinct GDC TCGA-LUAD biospecimen samples linked via HAS_SAMPLE to frozen cases in Data Release 46.0.",
+      "tcga_luad_gdc_r46_primary_tumor_samples": "All distinct GDC TCGA-LUAD biospecimen samples with sample_type == 'Primary Tumor' linked via HAS_SAMPLE to frozen cases in Data Release 46.0."
+    },
+    "project_summary_reference": {
+      "response_sha256": "8170ccfb2096a314161ed4cf9bf3a137d43267c99491cb4d408b5bc83de96cc0",
+      "summary": {
+        "case_count": 585,
+        "data_categories": [
+          {
+            "case_count": 573,
+            "data_category": "Simple Nucleotide Variation",
+            "file_count": 12207
+          },
+          {
+            "case_count": 584,
+            "data_category": "Sequencing Reads",
+            "file_count": 5053
+          },
+          {
+            "case_count": 585,
+            "data_category": "Biospecimen",
+            "file_count": 2731
+          },
+          {
+            "case_count": 585,
+            "data_category": "Clinical",
+            "file_count": 1146
+          },
+          {
+            "case_count": 519,
+            "data_category": "Copy Number Variation",
+            "file_count": 6926
+          },
+          {
+            "case_count": 520,
+            "data_category": "Transcriptome Profiling",
+            "file_count": 2336
+          },
+          {
+            "case_count": 579,
+            "data_category": "DNA Methylation",
+            "file_count": 2130
+          },
+          {
+            "case_count": 365,
+            "data_category": "Proteome Profiling",
+            "file_count": 365
+          },
+          {
+            "case_count": 243,
+            "data_category": "Somatic Structural Variation",
+            "file_count": 1150
+          },
+          {
+            "case_count": 518,
+            "data_category": "Structural Variation",
+            "file_count": 2696
+          }
+        ],
+        "experimental_strategies": [
+          {
+            "case_count": 518,
+            "experimental_strategy": "RNA-Seq",
+            "file_count": 5409
+          },
+          {
+            "case_count": 513,
+            "experimental_strategy": "miRNA-Seq",
+            "file_count": 1701
+          },
+          {
+            "case_count": 471,
+            "experimental_strategy": "WGS",
+            "file_count": 5903
+          },
+          {
+            "case_count": 582,
+            "experimental_strategy": "WXS",
+            "file_count": 10096
+          },
+          {
+            "case_count": 22,
+            "experimental_strategy": "ATAC-Seq",
+            "file_count": 22
+          },
+          {
+            "case_count": 518,
+            "experimental_strategy": "Genotyping Array",
+            "file_count": 7237
+          },
+          {
+            "case_count": 579,
+            "experimental_strategy": "Methylation Array",
+            "file_count": 2130
+          },
+          {
+            "case_count": 365,
+            "experimental_strategy": "Reverse Phase Protein Array",
+            "file_count": 365
+          },
+          {
+            "case_count": 514,
+            "experimental_strategy": "Tissue Slide",
+            "file_count": 1067
+          },
+          {
+            "case_count": 478,
+            "experimental_strategy": "Diagnostic Slide",
+            "file_count": 541
+          }
+        ],
+        "file_count": 36740,
+        "file_size": 349938158027998
+      },
+      "url": "https://api.gdc.cancer.gov/projects/TCGA-LUAD?expand=summary,summary.data_categories,summary.experimental_strategies"
+    },
+    "release_pinning_limitation": "GDC public REST API endpoints (/cases, /files, /projects) serve the current active release and do not accept an immutable historical release query parameter; reproducibility is anchored by freezing and SHA-256 hashing all raw HTTP page responses in raw.json and manifest.json.",
+    "requests_and_pagination": {
+      "cases": {
+        "endpoint": "https://api.gdc.cancer.gov/cases",
+        "fields": "case_id,submitter_id,project.project_id,disease_type,primary_site,samples.sample_id,samples.submitter_id,samples.sample_type,samples.tissue_type,samples.tumor_descriptor,samples.preservation_method,samples.portions.analytes.aliquots.aliquot_id,samples.portions.analytes.aliquots.submitter_id,samples.portions.analytes.aliquots.analyte_type",
+        "filters": {
+          "content": {
+            "field": "project.project_id",
+            "value": "TCGA-LUAD"
+          },
+          "op": "="
+        },
+        "page_count": 3,
+        "page_size": 200,
+        "pages": [
+          {
+            "offset": 0,
+            "request_url": "https://api.gdc.cancer.gov/cases?filters=%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D&fields=case_id%2Csubmitter_id%2Cproject.project_id%2Cdisease_type%2Cprimary_site%2Csamples.sample_id%2Csamples.submitter_id%2Csamples.sample_type%2Csamples.tissue_type%2Csamples.tumor_descriptor%2Csamples.preservation_method%2Csamples.portions.analytes.aliquots.aliquot_id%2Csamples.portions.analytes.aliquots.submitter_id%2Csamples.portions.analytes.aliquots.analyte_type&sort=case_id%3Aasc&format=json&size=200&from=0",
+            "response_sha256": "06d80572c368f776e77c2cc4c8dbdef5577ee0a2ce464a2095bb0cedc5c72ffb",
+            "returned_count": 200
+          },
+          {
+            "offset": 200,
+            "request_url": "https://api.gdc.cancer.gov/cases?filters=%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D&fields=case_id%2Csubmitter_id%2Cproject.project_id%2Cdisease_type%2Cprimary_site%2Csamples.sample_id%2Csamples.submitter_id%2Csamples.sample_type%2Csamples.tissue_type%2Csamples.tumor_descriptor%2Csamples.preservation_method%2Csamples.portions.analytes.aliquots.aliquot_id%2Csamples.portions.analytes.aliquots.submitter_id%2Csamples.portions.analytes.aliquots.analyte_type&sort=case_id%3Aasc&format=json&size=200&from=200",
+            "response_sha256": "5b6aeae47ec84bbbd9feba3e597d3421787ba523b7631f4d53d6391cf4322f4b",
+            "returned_count": 200
+          },
+          {
+            "offset": 400,
+            "request_url": "https://api.gdc.cancer.gov/cases?filters=%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D&fields=case_id%2Csubmitter_id%2Cproject.project_id%2Cdisease_type%2Cprimary_site%2Csamples.sample_id%2Csamples.submitter_id%2Csamples.sample_type%2Csamples.tissue_type%2Csamples.tumor_descriptor%2Csamples.preservation_method%2Csamples.portions.analytes.aliquots.aliquot_id%2Csamples.portions.analytes.aliquots.submitter_id%2Csamples.portions.analytes.aliquots.analyte_type&sort=case_id%3Aasc&format=json&size=200&from=400",
+            "response_sha256": "44dc1052087cdbbe1ae6e9816a6b52e146d86960e8d51884993dd9eacbc76f24",
+            "returned_count": 185
+          }
+        ],
+        "pagination_total": 585,
+        "sort": "case_id:asc"
+      },
+      "files": {
+        "endpoint": "https://api.gdc.cancer.gov/files",
+        "fields": "file_id,file_name,data_category,data_type,data_format,experimental_strategy,access,state,md5sum,file_size,cases.case_id,cases.samples.sample_id,cases.samples.sample_type,cases.samples.portions.analytes.aliquots.aliquot_id",
+        "filters": {
+          "content": [
+            {
+              "content": {
+                "field": "cases.project.project_id",
+                "value": "TCGA-LUAD"
+              },
+              "op": "="
+            },
+            {
+              "content": {
+                "field": "data_category",
+                "value": "Transcriptome Profiling"
+              },
+              "op": "="
+            },
+            {
+              "content": {
+                "field": "data_type",
+                "value": "Gene Expression Quantification"
+              },
+              "op": "="
+            },
+            {
+              "content": {
+                "field": "experimental_strategy",
+                "value": "RNA-Seq"
+              },
+              "op": "="
+            },
+            {
+              "content": {
+                "field": "access",
+                "value": "open"
+              },
+              "op": "="
+            }
+          ],
+          "op": "and"
+        },
+        "page_count": 4,
+        "page_size": 200,
+        "pages": [
+          {
+            "offset": 0,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Transcriptome+Profiling%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_type%22%2C%22value%22%3A%22Gene+Expression+Quantification%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22experimental_strategy%22%2C%22value%22%3A%22RNA-Seq%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id&sort=file_id%3Aasc&format=json&size=200&from=0",
+            "response_sha256": "4e14ea94309d5f756ec23d3e4e4a2694e32c2b7e83330e940b040cf8644458ab",
+            "returned_count": 200
+          },
+          {
+            "offset": 200,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Transcriptome+Profiling%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_type%22%2C%22value%22%3A%22Gene+Expression+Quantification%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22experimental_strategy%22%2C%22value%22%3A%22RNA-Seq%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id&sort=file_id%3Aasc&format=json&size=200&from=200",
+            "response_sha256": "eb3b8b37b5d5627be2af5dfac7b3cf45765134636abbe8e917cae41b7231d23a",
+            "returned_count": 200
+          },
+          {
+            "offset": 400,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Transcriptome+Profiling%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_type%22%2C%22value%22%3A%22Gene+Expression+Quantification%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22experimental_strategy%22%2C%22value%22%3A%22RNA-Seq%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id&sort=file_id%3Aasc&format=json&size=200&from=400",
+            "response_sha256": "c7cdae26f369be00f7e4c6b54c09c70fd64ec13c8acb2c76d4fb23aceea78fa9",
+            "returned_count": 200
+          },
+          {
+            "offset": 600,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Transcriptome+Profiling%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_type%22%2C%22value%22%3A%22Gene+Expression+Quantification%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22experimental_strategy%22%2C%22value%22%3A%22RNA-Seq%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id&sort=file_id%3Aasc&format=json&size=200&from=600",
+            "response_sha256": "15253d0c29481f4df4fe002ca9f7cab07d5ed85371f50bb9ea87190523bac4d5",
+            "returned_count": 1
+          }
+        ],
+        "pagination_total": 601,
+        "sort": "file_id:asc"
+      }
+    },
+    "row_counts": {
+      "aliquots": 7978,
+      "assays": 0,
+      "cases": 585,
+      "evidence": 50932,
+      "files": 601,
+      "identity_mappings": 0,
+      "pathology_reports": 0,
+      "patients": 0,
+      "relationships": 10360,
+      "samples": 1781
+    },
+    "supported_entity_levels": [
+      "case",
+      "sample",
+      "aliquot",
+      "file"
+    ],
+    "tables": {
+      "aliquots": {
+        "declared_completeness": "COMPLETE",
+        "declared_row_count": 7978,
+        "sha256": "8f2cb275ee9afb362a6343ca125cc5f3dbf027f5765de9df51ae1ce40e20496b"
+      },
+      "assays": {
+        "completeness_note": "Assay execution, QC status, and biomarker results are not acquired from GDC file inventory.",
+        "declared_completeness": "PARTIAL_INGEST",
+        "declared_row_count": 0
+      },
+      "cases": {
+        "declared_completeness": "COMPLETE",
+        "declared_row_count": 585,
+        "sha256": "d7dc0eb35bc6eac9ea5110db4e067e274ed5946d0d84a9e7e34330dd529d1f06"
+      },
+      "files": {
+        "declared_completeness": "COMPLETE",
+        "declared_row_count": 601,
+        "scope_note": "Scoped strictly to open-access TCGA-LUAD RNA-Seq Gene Expression Quantification files.",
+        "sha256": "e5bc0ee60ccdc333b931429416fd7cdb3cb514479c3c497058fe6bf5e973c1ce"
+      },
+      "samples": {
+        "declared_completeness": "COMPLETE",
+        "declared_row_count": 1781,
+        "sha256": "85be6a7866158525c74dcdb556178e6526e905781e00532b50ad10b8b6b0d2c9"
+      }
+    },
+    "transformations": [
+      "Deduplicated GDC /cases hits by case_id into entity kind='case' preserving project_id, submitter_id, disease_type, primary_site.",
+      "Flattened case.samples into unique entity kind='sample' linked via HAS_SAMPLE(case->sample) preserving sample_type, tissue_type, tumor_descriptor, preservation_method.",
+      "Flattened sample.portions.analytes.aliquots into unique entity kind='aliquot' linked via HAS_ALIQUOT(sample->aliquot) preserving analyte_type.",
+      "Deduplicated open-access RNA-Seq Gene Expression Quantification GDC /files hits into entity kind='file' linked via HAS_FILE(aliquot->file, or sample->file when no aliquot link exists)."
+    ],
+    "upstream_source": "NCI Genomic Data Commons (GDC) Public REST API",
+    "upstream_status": {
+      "commit": "8f7c2a51ab0084b216ad1b62a3fae8b945439c53",
+      "data_release": "Data Release 46.0 - August 10, 2026",
+      "data_release_version": {
+        "major": 46,
+        "minor": 0,
+        "release_date": "2026-08-10"
+      },
+      "response_sha256": "a8b1c69f9cfc678486e1c897aee6d878f47fab9cb4c60eb6818598bbe30a7139",
+      "tag": "8.5.0",
+      "url": "https://api.gdc.cancer.gov/status"
+    }
+  },
+  "publication": "READY",
+  "raw_content_sha256": "89322a7056bca57755b488b2057fe804b53ca81ab8c47481618b2765513614b5",
+  "request": {
+    "case_fields": "case_id,submitter_id,project.project_id,disease_type,primary_site,samples.sample_id,samples.submitter_id,samples.sample_type,samples.tissue_type,samples.tumor_descriptor,samples.preservation_method,samples.portions.analytes.aliquots.aliquot_id,samples.portions.analytes.aliquots.submitter_id,samples.portions.analytes.aliquots.analyte_type",
+    "file_fields": "file_id,file_name,data_category,data_type,data_format,experimental_strategy,access,state,md5sum,file_size,cases.case_id,cases.samples.sample_id,cases.samples.sample_type,cases.samples.portions.analytes.aliquots.aliquot_id",
+    "file_filters": {
+      "content": [
+        {
+          "content": {
+            "field": "cases.project.project_id",
+            "value": "TCGA-LUAD"
+          },
+          "op": "="
+        },
+        {
+          "content": {
+            "field": "data_category",
+            "value": "Transcriptome Profiling"
+          },
+          "op": "="
+        },
+        {
+          "content": {
+            "field": "data_type",
+            "value": "Gene Expression Quantification"
+          },
+          "op": "="
+        },
+        {
+          "content": {
+            "field": "experimental_strategy",
+            "value": "RNA-Seq"
+          },
+          "op": "="
+        },
+        {
+          "content": {
+            "field": "access",
+            "value": "open"
+          },
+          "op": "="
+        }
+      ],
+      "op": "and"
+    },
+    "kind": "gdc_v2_biospecimen_and_scoped_files",
+    "page_size": 200,
+    "project": "TCGA-LUAD"
+  },
+  "retrieved_at_utc": "2026-11-18T23:48:54+00:00",
+  "schema_version": "1.0.0",
+  "snapshot_id": "gdc-89322a7056bca577",
+  "source": "gdc",
+  "sqlite_sha256": "c27d15eed8f225cf1e48af9ba0d0bac9d7c6ce62f8bdd7acf38e1966fd88281a"
+}

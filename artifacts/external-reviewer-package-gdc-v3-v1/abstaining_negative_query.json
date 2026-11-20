@@ -1,0 +1,27 @@
+{
+  "cohort_id": "tcga_luad_gdc_r46_molecular_v3",
+  "denominator_basis": "tcga_luad_gdc_r46_wxs_masked_ssm_primary_tumor_samples",
+  "entity_level": "sample",
+  "operation": "cohort_count",
+  "predicate": {
+    "access": "open",
+    "call_status": "NEGATIVE",
+    "canonical_transcript_id": "ENST00000275493",
+    "data_category": "Simple Nucleotide Variation",
+    "data_format": "MAF",
+    "data_type": "Masked Somatic Mutation",
+    "experimental_strategy": "WXS",
+    "gene_symbol": "EGFR",
+    "hgvsp_short_in": [
+      "p.L858R",
+      "p.E746_A750del"
+    ],
+    "ncbi_build": "GRCh38",
+    "project_id": "TCGA-LUAD",
+    "require_explicit_negative_coverage": true,
+    "sample_type": "Primary Tumor",
+    "source": "gdc",
+    "state": "released"
+  },
+  "snapshot_id": "gdc-8d5ccf3bc2893baa"
+}

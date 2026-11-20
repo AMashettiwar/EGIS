@@ -1,11 +1,21 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Normalized evidence bundle",
-  "type": "object",
-  "required": ["entities", "relationships", "evidence"],
   "properties": {
-    "entities": {"type": "array"},
-    "relationships": {"type": "array"},
-    "evidence": {"type": "array"}
-  }
+    "entities": {
+      "type": "array"
+    },
+    "evidence": {
+      "type": "array"
+    },
+    "relationships": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "entities",
+    "relationships",
+    "evidence"
+  ],
+  "title": "Normalized evidence bundle",
+  "type": "object"
 }

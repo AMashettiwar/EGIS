@@ -1,0 +1,18 @@
+{
+  "cohort_id": "tcga_luad_gdc_r46_biospecimen_v2",
+  "denominator_basis": "tcga_luad_gdc_r46_primary_tumor_samples",
+  "entity_level": "sample",
+  "operation": "cohort_count",
+  "predicate": {
+    "access": "open",
+    "data_category": "Transcriptome Profiling",
+    "data_format": "TSV",
+    "data_type": "Gene Expression Quantification",
+    "experimental_strategy": "RNA-Seq",
+    "project_id": "TCGA-LUAD",
+    "sample_type": "Primary Tumor",
+    "source": "gdc",
+    "state": "released"
+  },
+  "snapshot_id": "gdc-89322a7056bca577"
+}

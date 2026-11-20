@@ -8,8 +8,10 @@ Shared conventions:
 
 - Python 3.11+, SQLite, JSON Schema, pytest; no runtime network calls during answer or verify.
 - Source identifiers are namespaced as `gdc:<id>` or `pdc:<id>`.
-- Entity kinds are `case`, `sample`, `aliquot`, `assay`, and `file`; relationships are explicit typed edges.
+- Entity kinds are `patient`, `case`, `sample`, `aliquot`, `assay`, and `file`; relationships are explicit typed edges alongside versioned `pathology_reports` (`ACTIVE_FINAL | SUPERSEDED`) and governed `identity_mappings`.
 - Result statuses are `SUPPORTED`, `CONTRADICTED`, `UNKNOWN`, `CONFLICT`, `AMBIGUOUS`, `OUT_OF_SCOPE`, and `ERROR`.
+- Supported structured operations are `cohort_count`, `claim_verification`, `cross_source_overlap_count`, `entity_attribute_query`, `out_of_scope_request`, plus legacy `count_entities`, `assay_availability`, `assay_overlap`, `file_lineage`, and `compare_inventories`.
+- Detailed Phase 1–6 architecture, public contracts, baseline audit, and research-readiness roadmap are documented in `docs/architecture_and_roadmap.md`.
 - Every answer certificate includes canonical query, entity level, snapshot/rule/schema identifiers and hashes, policies, numerator/denominator, result, status/reason code, evidence references, and a witness.
 - The replay checker has its own set reconstruction and arithmetic path; it may share schemas/specifications but not the production answer function.
 - Never claim external evaluator or real-source completion without an external artifact. Mark it `BLOCKED` or `PENDING_EXTERNAL`.

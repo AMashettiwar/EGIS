@@ -1,0 +1,292 @@
+{
+  "all_checks_passed": true,
+  "cross_verification_checks": {
+    "cli_abstaining_negative_ok": true,
+    "cli_abstaining_unacquired_gene_ok": true,
+    "cli_aliquot_ids_match": true,
+    "cli_evidence_refs_match": true,
+    "cli_file_ids_match": true,
+    "cli_supported_counts_match": true,
+    "cli_supported_replay_valid": true,
+    "cli_supported_status_match": true,
+    "cli_variant_ids_match": true,
+    "cli_witness_set_match": true,
+    "matches_prior_milestone_result_exact": true,
+    "raw_vs_norm_denominator_match": true,
+    "raw_vs_norm_positive_sets_match": true,
+    "raw_vs_sqlite_denominator_match": true,
+    "raw_vs_sqlite_positive_sets_match": true
+  },
+  "generated_at_utc": "2026-11-19T00:39:40+00:00",
+  "git_head_commit": "658c77483e91c3cd6c9d0df355dd9de7aaffdfb9",
+  "independent_linkage_and_multiplicity_audit": {
+    "cases_by_primary_tumor_sample_count": {
+      "1": 107,
+      "2": 466,
+      "3": 12
+    },
+    "cases_total": 585,
+    "cases_with_multiple_wxs_primary_tumor_samples": 12,
+    "compound_target_egfr_samples": {
+      "7ca68089-c61f-4d31-8cc8-fb11ae70910a": [
+        {
+          "hgvsp_short": "p.T790M",
+          "ssm_occurrence_id": "72dae237-5b8a-5244-b2c3-6bb7fd7f612c"
+        },
+        {
+          "hgvsp_short": "p.L858R",
+          "ssm_occurrence_id": "b834e073-cf63-5694-b44f-4c694d53ef94"
+        }
+      ],
+      "b08432a7-891a-41ee-a2c0-10a994d01e00": [
+        {
+          "hgvsp_short": "p.L858R",
+          "ssm_occurrence_id": "58590071-1cba-5eed-aea2-e3d265d819d7"
+        },
+        {
+          "hgvsp_short": "p.T790M",
+          "ssm_occurrence_id": "8ac8e757-2bb5-57e1-a70b-028c3ef22092"
+        }
+      ],
+      "fb9c6881-c503-45c8-b17a-b47a9e8d9003": [
+        {
+          "hgvsp_short": "p.L858R",
+          "ssm_occurrence_id": "8e5c512e-6b47-51eb-8ba6-5ae1149b1974"
+        },
+        {
+          "hgvsp_short": "p.L62R",
+          "ssm_occurrence_id": "cec33fbe-99e9-5264-ae45-b0a13f302a7b"
+        }
+      ],
+      "feec7fa2-1f3f-4cbe-a89c-df01d13a9299": [
+        {
+          "hgvsp_short": "p.L62R",
+          "ssm_occurrence_id": "326bd6fe-7048-5ee1-be52-c5edd2415c83"
+        },
+        {
+          "hgvsp_short": "p.L858R",
+          "ssm_occurrence_id": "6515446d-ce0e-5ea8-a508-23274bb016bb"
+        }
+      ]
+    },
+    "egfr_any_variant_primary_tumor_samples": 78,
+    "egfr_samples_by_occurrence_count": {
+      "1": 65,
+      "2": 11,
+      "3": 2
+    },
+    "egfr_ssm_occurrences_multiply_matched": 0,
+    "egfr_ssm_occurrences_non_unique_maf_file": 0,
+    "egfr_ssm_occurrences_total": 93,
+    "egfr_ssm_occurrences_unmatched": 0,
+    "multi_maf_egfr_samples": {
+      "37a8d3a5-baa0-427c-ab43-48ae4b93633b": {
+        "egfr_occurrences": [
+          {
+            "hgvsp_short": "p.A767_V769dup",
+            "ssm_occurrence_id": "2563e277-5e9c-5c45-8faf-8314226fa8b7",
+            "tumor_aliquot_id": "9139dd4e-4a65-4d87-8461-d6382b6e3ba2"
+          }
+        ],
+        "wxs_maf_file_count": 4,
+        "wxs_tumor_aliquot_count": 4
+      },
+      "43f5270a-f2f2-4dd9-83b5-486b805e35b8": {
+        "egfr_occurrences": [
+          {
+            "hgvsp_short": "p.S768I",
+            "ssm_occurrence_id": "5d36ceb5-b2b0-58e7-92c2-b52592c31e09",
+            "tumor_aliquot_id": "7b6daa70-492e-4283-b3d2-b26f4e26a8d4"
+          },
+          {
+            "hgvsp_short": "p.V769L",
+            "ssm_occurrence_id": "6ee95e29-fd9f-5836-8b31-d0a1987ac5ff",
+            "tumor_aliquot_id": "7b6daa70-492e-4283-b3d2-b26f4e26a8d4"
+          }
+        ],
+        "wxs_maf_file_count": 4,
+        "wxs_tumor_aliquot_count": 4
+      },
+      "74bcf2d5-fd42-423e-bd96-b2de1b0cf778": {
+        "egfr_occurrences": [
+          {
+            "hgvsp_short": "p.L858R",
+            "ssm_occurrence_id": "77b9cd53-f389-54fd-b68e-150765666453",
+            "tumor_aliquot_id": "92da1bb5-2e83-4f2f-88dd-afc0cb7d91d1"
+          }
+        ],
+        "wxs_maf_file_count": 2,
+        "wxs_tumor_aliquot_count": 2
+      },
+      "b0410cd6-693d-41d6-9dad-d1b1c30bf5cb": {
+        "egfr_occurrences": [
+          {
+            "hgvsp_short": "p.I853=",
+            "ssm_occurrence_id": "1d6399ca-c4bb-57cd-9e11-863c46a83645",
+            "tumor_aliquot_id": "a715d783-38f1-4f6d-991b-983fb907cc9f"
+          }
+        ],
+        "wxs_maf_file_count": 2,
+        "wxs_tumor_aliquot_count": 2
+      }
+    },
+    "primary_tumor_samples_total": 1075,
+    "snv_unmatched_aliquot_links": 0,
+    "snv_unmatched_sample_links": 0,
+    "target_aliquot_ids_count": 40,
+    "target_canonical_egfr_positive_cases": 40,
+    "target_canonical_egfr_positive_samples": 40,
+    "target_lineage_evidence_refs_count": 160,
+    "target_variant_breakdown": {
+      "p.E746_A750del": 18,
+      "p.L858R": 22
+    },
+    "target_variant_record_ids_count": 40,
+    "target_wxs_maf_file_ids_count": 40,
+    "wxs_cases_by_pt_sample_count": {
+      "0": 26,
+      "1": 547,
+      "2": 12
+    },
+    "wxs_masked_ssm_maf_files_total": 618,
+    "wxs_masked_ssm_primary_tumor_cases": 559,
+    "wxs_masked_ssm_primary_tumor_samples": 571,
+    "wxs_pt_samples_by_maf_file_count": {
+      "1": 550,
+      "2": 11,
+      "3": 3,
+      "4": 4,
+      "5": 3
+    }
+  },
+  "network_mode": "disabled_in_process_and_subprocess",
+  "preserved_prior_artifacts": {
+    "artifacts/blind-exam-run/FROZEN_MANIFEST.json": {
+      "file_sha256": "19ae9a66695f2c74f0ba940e91af4df43fbe3947e507bf8e0dfdad394382796c",
+      "internal_manifest_sha256": "3e7e2f472b7bd64e9ceb2321e188ff6e3dfc74d49b880bc82708ac7de4a2fe1d"
+    },
+    "artifacts/cor-001-blind-run/FROZEN_MANIFEST.json": {
+      "file_sha256": "4e53c60a36debe1329297b276c62efe704cf915a728d8a4bb015e51428ac6281",
+      "internal_manifest_sha256": "3835e5940f5ad577e720cfcaf5b6ce273999c0325e40c84e100a44cdfeda78ae"
+    },
+    "artifacts/gdc-luad-v2-milestone/source_reconciliation_report.json": {
+      "file_sha256": "8ec76796461ec968741f3939776ff15483e88f9f1e3a7a9f44f98f4de70f3303"
+    },
+    "artifacts/gdc-luad-v3-molecular-milestone/source_reconciliation_report.json": {
+      "file_sha256": "3c292a32d4ccaffb46ea2b2beac10553679ed4c1f99ae4752afea3e0e730b751"
+    },
+    "artifacts/regression-exam-run/FROZEN_MANIFEST.json": {
+      "file_sha256": "35b73ce957643ba1f37433806df3967d89c334a5fa7167624028ad9fc38beebf",
+      "internal_manifest_sha256": "a0e00a53fea7082a9af04fc51aae6950d5e5d2469da64077bc3b1f8eb141e4cb"
+    },
+    "snapshots/real/gdc_tcga_luad/manifest.json": {
+      "file_sha256": "4644cca8458cbddcef17937146fcf666ecab8d9d1ce88a6b9e37b19af54c0cf6",
+      "internal_manifest_sha256": "cb1ddca6b562811a02ec803cc5ae99a9069faa70ce75040fdba5b44b98b10f7d"
+    },
+    "snapshots/real/gdc_tcga_luad_v2/manifest.json": {
+      "file_sha256": "b64e2117e63534aa943f390c1aceb29dc1a14bcee279771e5effc1f7cfba8e09",
+      "internal_manifest_sha256": "82209334a25566a21a75277922c4b8ef17b0b9987dcd787f6aeeaf6cf119e2cd"
+    },
+    "snapshots/real/gdc_tcga_luad_v3/manifest.json": {
+      "file_sha256": "26a5f547e0ddb15569a12ae8d212622fd5910f4fa4b9731dc2c8ed0ffb0b8339",
+      "internal_manifest_sha256": "71488379a4ed5c090e9d36bbdeca53bb44fe0922e1dda908edd463225f502dd1"
+    },
+    "snapshots/real/pdc_pdc000153/manifest.json": {
+      "file_sha256": "8a81f82cda85d2cfc4c85ea9063d6a01678ca03ffb62e8fcacf56ee851ce8125",
+      "internal_manifest_sha256": "c7ba39d7231259c54093584f60de67eff4bdf498134b82a96b5c7776edc79071"
+    }
+  },
+  "report_role": "developer_independent_recheck_and_package_builder",
+  "report_version": "1.0.0",
+  "snapshot": {
+    "cohort_id": "tcga_luad_gdc_r46_molecular_v3",
+    "hash_verification": {
+      "base_v2_manifest_file_sha256_match": true,
+      "base_v2_raw_sha256_match": true,
+      "manifest_sha256_match": true,
+      "normalized_content_sha256_match": true,
+      "raw_capture_page_metadata_consistent": true,
+      "raw_content_sha256_match": true,
+      "ready_marker_match": true,
+      "sqlite_sha256_match": true
+    },
+    "hashes": {
+      "manifest_file_sha256": "26a5f547e0ddb15569a12ae8d212622fd5910f4fa4b9731dc2c8ed0ffb0b8339",
+      "manifest_sha256_canonical": "71488379a4ed5c090e9d36bbdeca53bb44fe0922e1dda908edd463225f502dd1",
+      "normalized_content_sha256": "57ea7cf8f33afc6c2361eb92f7a795b622548ea15c7c0c3a534c54f99a02eb49",
+      "raw_content_sha256": "8d5ccf3bc2893baaf5cfb5b01a374dd34c27601b5093b5e1368174f1232896c9",
+      "sqlite_sha256": "b56a15ca9ae42accff15258262fbf49fbc5ce7ffce5cbfc4f43349dc5e564b48"
+    },
+    "page_consistency": {
+      "cases": {
+        "all_page_hashes_match_raw_capture": true,
+        "all_page_hit_counts_match": true,
+        "page_count": 3,
+        "pagination_total": 585
+      },
+      "egfr_ssm_occurrences": {
+        "all_page_hashes_match_raw_capture": true,
+        "all_page_hit_counts_match": true,
+        "page_count": 1,
+        "pagination_total": 93
+      },
+      "rnaseq_files": {
+        "all_page_hashes_match_raw_capture": true,
+        "all_page_hit_counts_match": true,
+        "page_count": 4,
+        "pagination_total": 601
+      },
+      "wxs_snv_files": {
+        "all_page_hashes_match_raw_capture": true,
+        "all_page_hit_counts_match": true,
+        "page_count": 4,
+        "pagination_total": 618
+      }
+    },
+    "path": "snapshots/real/gdc_tcga_luad_v3",
+    "provenance_notes": [
+      "GDC /status response_sha256 and per-page response_sha256 digests were computed at fetch time over live HTTP wire bytes; raw.json stores re-serialized UTF-8 JSON (indent=2, sort_keys=True), so wire whitespace bytes are not stored separately.",
+      "In v3 manifest.provenance_metadata.base_snapshot_foundation.manifest_sha256, b64e2117e63534aa943f390c1aceb29dc1a14bcee279771e5effc1f7cfba8e09 is the raw disk-file SHA-256 of v2/manifest.json, whereas v2/manifest.json['manifest_sha256'] (82209334...) is the canonical JSON digest computed before inserting the manifest_sha256 key."
+    ],
+    "retrieved_at_utc": "2026-11-19T00:21:26+00:00",
+    "snapshot_id": "gdc-8d5ccf3bc2893baa",
+    "upstream_commit": "8f7c2a51ab0084b216ad1b62a3fae8b945439c53",
+    "upstream_data_release": "Data Release 46.0 - August 10, 2026",
+    "upstream_tag": "8.5.0"
+  },
+  "source_file_sha256": {
+    "scripts/acquire_public_snapshots.py": "69262f0e40064363316d1d002e85a34c205fc753440fc2089e3aebc64a1b5cbf",
+    "scripts/build_cleanroom_holdout.py": "fbc611f45364ff48e8a582d73c1b3a6415c7c246fd9ccacce09ab2da5181020f",
+    "scripts/compare_real_inventories.py": "e51d57bfbcf46e648bb284dba7d14e055f065c38e6b6e23ba3f05d7c333feda1",
+    "scripts/grade_blind_run.py": "f3ded174c0055367c17476f33dabd3b5019c2410e01192d69cb1954cbf1374b2",
+    "scripts/independent_recheck_gdc_v3.py": "4d67ea1b99467176772ed514bde40af55db5b8247c18169a03d5c773eca34812",
+    "scripts/inspect_real_snapshots.py": "290d5aef30408a50c29b7f0f55b2fd3653820cc93cf6e8f3a6322251d8593bb5",
+    "scripts/mutation_check.py": "e3bfa5b03d06a9e1a1352e65a6ee47cc1be323873ad3eb0dae2035be2935a6b9",
+    "scripts/reconcile_and_verify_gdc_v2.py": "b35ed6e27d20dfbd68b2f7c2395a5dfca55f3ebe1601d4a7cc4e05876ebe0c23",
+    "scripts/reconcile_and_verify_gdc_v3.py": "bdff787ad215823c24170d040938b406fa33075e8ab9258e48f988c1face0257",
+    "scripts/run_blind_exam.py": "bb9cf71452ce7d082aab11af16d2349c518719b2171cc7795d84c3a895c28c6f",
+    "scripts/run_demo.py": "4bad65a3fceb8154affe4cade19a00d8dd543aa095c00d24734a8abc335b5eb7",
+    "src/cancer_evidence/__init__.py": "2fdfe86c4856ba967f284665cf169999695854d86973b236c70b89c04495c475",
+    "src/cancer_evidence/__main__.py": "3129adff95e0f38b87ab34cddfc27082c7892bcaec267ff5d40f160fdf55b44a",
+    "src/cancer_evidence/adapters.py": "5ef140a3834ad2ca6cac58c8ecd7c6ff16723873d4b5dd8bb0302f5e29195a3b",
+    "src/cancer_evidence/certificate.py": "3aca73f6594ce1cbde66b7d4f387590f88fbf92644bc33b8b7d581b26d4a3124",
+    "src/cancer_evidence/cli.py": "3b4f9fa698fcbc0e473482b2df55098c22d8c6281c7f1061bd825ce7f3832aff",
+    "src/cancer_evidence/engine.py": "6a3adce8918841d793d656c8023c99e7fe43a4620b1b5504e094fe482d080c2a",
+    "src/cancer_evidence/evaluator.py": "73e572c63609c887ac6c64612855cebdb0d3a827afeb1323bc02a0a4706a534f",
+    "src/cancer_evidence/fixture.py": "0454d258bfbd02cf799f63c3478560ddfb409cbd3f08b58c440c14bf0f8b1c18",
+    "src/cancer_evidence/model.py": "d1f4bc4e28e1b94fb1608ceac679a1de953779ad367ef5128347e762dd24d841",
+    "src/cancer_evidence/replay.py": "5ca28279c59a4d1e2758c6862619b8b20aaef050c8c84e585e0b447a706ec863",
+    "src/cancer_evidence/schema.py": "f8f528be92e66422dc44f4b5d5aeef2e739a387cdeb4ba185f0a7c2a3e9096cc",
+    "src/cancer_evidence/signing.py": "005a9537d70984e731b381db46cb6dd0c519e5dfdfa7dfd035605222c64cbe38",
+    "src/cancer_evidence/snapshot.py": "0c742e3f5bff89a616d4a13e227fa820f0d368d1a90f20669ed0fae7f9c61228"
+  },
+  "source_semantics_verification": {
+    "all_93_canonical_ENST00000275493_present": true,
+    "all_93_chromosome_chr7": true,
+    "all_93_gene_ENSG00000146648_EGFR": true,
+    "all_93_mutation_status_Somatic": true,
+    "all_93_ncbi_build_GRCh38": true,
+    "all_93_positive_only_no_wt_reference_calls": true,
+    "all_93_variant_process_masked": true
+  }
+}

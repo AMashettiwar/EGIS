@@ -1,0 +1,66 @@
+{
+  "certificate_sha256": "7df88473a53a3b98ccd9b74522478834c62aef2cc426eff89a21a22ebe55cf81",
+  "certificate_version": "2.0.0",
+  "derivation": {
+    "input": "raw.json",
+    "input_sha256": "89322a7056bca57755b488b2057fe804b53ca81ab8c47481618b2765513614b5",
+    "output": "normalized.json",
+    "output_sha256": "792664de5bc0293f0870a54b13799855b7123481ec28e22b2d869ccca600e785",
+    "version": "raw-to-normalized-v1"
+  },
+  "engine": "cancer-evidence-engine",
+  "evidence_scope": {
+    "coverage": {
+      "gdc": {
+        "aliquot_count": 7978,
+        "cohort_id": "tcga_luad_gdc_r46_biospecimen_v2",
+        "complete": true,
+        "expected_total": 585,
+        "page_count": 3,
+        "retrieved_count": 585,
+        "sample_count": 1781,
+        "scope": "TCGA-LUAD",
+        "scoped_file_count": 601,
+        "scoped_files_expected_total": 601
+      }
+    },
+    "source": "gdc"
+  },
+  "limitations": [
+    "Metadata only; no clinical, prognostic, biomarker, causal, or patient-identity claim."
+  ],
+  "query": {
+    "cohort_id": "tcga_luad_gdc_r46_biospecimen_v2",
+    "denominator_basis": "tcga_luad_gdc_r46_primary_tumor_samples_with_completed_EGFR_assay",
+    "entity_level": "sample",
+    "operation": "cohort_count",
+    "predicate": {
+      "assay_status": "COMPLETED",
+      "biomarker": "EGFR_ACTIVATING",
+      "positive_results_in": [
+        "L858R_POSITIVE",
+        "Ex19del_POSITIVE"
+      ],
+      "project_id": "TCGA-LUAD",
+      "qc_status": "PASS",
+      "sample_type": "Primary Tumor",
+      "source": "gdc"
+    },
+    "snapshot_id": "gdc-89322a7056bca577"
+  },
+  "query_sha256": "a8a70157bc8b64c478c638a7460b658c6219964758ae7b3263befd04fa6bcc02",
+  "result": {
+    "evidence_refs": [],
+    "reason_code": "INCOMPLETE_SNAPSHOT",
+    "result": {},
+    "status": "UNKNOWN",
+    "witness": []
+  },
+  "rule_version": "rules-2.0.0",
+  "signature": "gu8Caw087QX9RXKNwWtpGRtNovbdqvohcmQLAp94TyPoOUQMKBSG9ajuZ2+SNQJe4VHiF1AdBXeTK9DZ2YogCw==",
+  "signature_algorithm": "Ed25519",
+  "snapshot_id": "gdc-89322a7056bca577",
+  "snapshot_manifest_sha256": "82209334a25566a21a75277922c4b8ef17b0b9987dcd787f6aeeaf6cf119e2cd",
+  "snapshot_sha256": "89322a7056bca57755b488b2057fe804b53ca81ab8c47481618b2765513614b5",
+  "verification_public_key": "keys/public_key.pem"
+}

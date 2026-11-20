@@ -29,13 +29,17 @@ def sha256_json(value: Any) -> str:
 
 def derive_normalized(raw_bundle: dict[str, Any]) -> dict[str, Any]:
     """Derive the canonical snapshot payload from a raw capture."""
-    return {
+    normalized: dict[str, Any] = {
         "source": raw_bundle.get("source"),
         "coverage": raw_bundle.get("coverage", {}),
         "entities": raw_bundle.get("entities", []),
         "relationships": raw_bundle.get("relationships", []),
         "evidence": raw_bundle.get("evidence", []),
     }
+    for optional_key in ("pathology_reports", "identity_mappings", "provenance_metadata"):
+        if optional_key in raw_bundle:
+            normalized[optional_key] = raw_bundle[optional_key]
+    return normalized
 
 
 def _init_db(path: Path) -> sqlite3.Connection:
@@ -45,7 +49,7 @@ def _init_db(path: Path) -> sqlite3.Connection:
         PRAGMA foreign_keys = ON;
         CREATE TABLE entities (
             entity_id TEXT PRIMARY KEY,
-            kind TEXT NOT NULL CHECK(kind IN ('case','sample','aliquot','assay','file')),
+            kind TEXT NOT NULL CHECK(kind IN ('patient','case','sample','aliquot','assay','file')),
             source TEXT NOT NULL,
             source_id TEXT NOT NULL,
             attributes_json TEXT NOT NULL
@@ -69,6 +73,28 @@ def _init_db(path: Path) -> sqlite3.Connection:
             source_record_id TEXT NOT NULL,
             FOREIGN KEY(entity_id) REFERENCES entities(entity_id)
         );
+        CREATE TABLE pathology_reports (
+            report_id TEXT PRIMARY KEY,
+            case_id TEXT,
+            patient_id TEXT,
+            record_status TEXT,
+            superseded_by TEXT,
+            attributes_json TEXT NOT NULL
+        );
+        CREATE TABLE identity_mappings (
+            mapping_id TEXT PRIMARY KEY,
+            source_a TEXT,
+            source_b TEXT,
+            source_a_id TEXT,
+            source_b_id TEXT,
+            approval_status TEXT,
+            authority TEXT,
+            cardinality TEXT,
+            resolution TEXT,
+            attributes_json TEXT NOT NULL
+        );
+        CREATE INDEX IF NOT EXISTS idx_evidence_entity ON evidence(entity_id);
+        CREATE INDEX IF NOT EXISTS idx_relationships_object ON relationships(object_id);
         """
     )
     return connection
@@ -135,6 +161,8 @@ def write_snapshot(
         "complete": effective_complete,
         "publication": publication,
     }
+    if "provenance_metadata" in raw_bundle:
+        manifest["provenance_metadata"] = raw_bundle["provenance_metadata"]
 
     output_dir = Path(output_dir)
     output_dir.parent.mkdir(parents=True, exist_ok=True)
@@ -157,10 +185,11 @@ def write_snapshot(
         entity_sources = {row["entity_id"]: row["source"] for row in normalized["entities"]}
         entity_kinds = {row["entity_id"]: row["kind"] for row in normalized["entities"]}
         allowed_predicates = {
-            "HAS_SAMPLE": {("case", "sample")},
+            "HAS_CASE": {("patient", "case")},
+            "HAS_SAMPLE": {("case", "sample"), ("patient", "sample")},
             "HAS_ALIQUOT": {("case", "aliquot"), ("sample", "aliquot")},
-            "HAS_ASSAY": {("case", "assay"), ("sample", "assay"), ("aliquot", "assay")},
-            "HAS_FILE": {("assay", "file")},
+            "HAS_ASSAY": {("patient", "assay"), ("case", "assay"), ("sample", "assay"), ("aliquot", "assay")},
+            "HAS_FILE": {("assay", "file"), ("aliquot", "file"), ("sample", "file"), ("case", "file")},
         }
         for rel in normalized["relationships"]:
             subject_source = entity_sources.get(rel["subject_id"])
@@ -176,6 +205,34 @@ def write_snapshot(
             connection.execute(
                 "INSERT INTO evidence VALUES (?,?,?,?,?,?)",
                 (evidence["evidence_id"], evidence["entity_id"], evidence["field_name"], canonical_json(evidence.get("raw_value")), canonical_json(evidence.get("canonical_value")), evidence["source_record_id"]),
+            )
+        for report in normalized.get("pathology_reports", []):
+            connection.execute(
+                "INSERT INTO pathology_reports VALUES (?,?,?,?,?,?)",
+                (
+                    report["report_id"],
+                    report.get("case_id"),
+                    report.get("patient_id"),
+                    report.get("record_status"),
+                    report.get("superseded_by"),
+                    canonical_json(report),
+                ),
+            )
+        for mapping in normalized.get("identity_mappings", []):
+            connection.execute(
+                "INSERT INTO identity_mappings VALUES (?,?,?,?,?,?,?,?,?,?)",
+                (
+                    mapping["mapping_id"],
+                    mapping.get("source_a"),
+                    mapping.get("source_b"),
+                    mapping.get("source_a_id"),
+                    mapping.get("source_b_id"),
+                    mapping.get("approval_status"),
+                    mapping.get("authority"),
+                    mapping.get("cardinality"),
+                    mapping.get("resolution"),
+                    canonical_json(mapping),
+                ),
             )
         connection.commit()
         connection.close()

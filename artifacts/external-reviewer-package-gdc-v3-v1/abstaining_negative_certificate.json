@@ -1,0 +1,77 @@
+{
+  "certificate_sha256": "e8284bb95e5b2fa173ba74af5cc844c9f3bc491e1b78f50d38893de611eda872",
+  "certificate_version": "2.0.0",
+  "derivation": {
+    "input": "raw.json",
+    "input_sha256": "8d5ccf3bc2893baaf5cfb5b01a374dd34c27601b5093b5e1368174f1232896c9",
+    "output": "normalized.json",
+    "output_sha256": "57ea7cf8f33afc6c2361eb92f7a795b622548ea15c7c0c3a534c54f99a02eb49",
+    "version": "raw-to-normalized-v1"
+  },
+  "engine": "cancer-evidence-engine",
+  "evidence_scope": {
+    "coverage": {
+      "gdc": {
+        "aliquot_count": 7978,
+        "assay_count": 93,
+        "cohort_id": "tcga_luad_gdc_r46_molecular_v3",
+        "complete": true,
+        "expected_total": 585,
+        "page_count": 3,
+        "retrieved_count": 585,
+        "rnaseq_file_count": 601,
+        "sample_count": 1781,
+        "scope": "TCGA-LUAD",
+        "scoped_file_count": 1219,
+        "snv_maf_file_count": 618,
+        "ssm_occurrences_expected_total": 93
+      }
+    },
+    "source": "gdc"
+  },
+  "limitations": [
+    "Metadata only; no clinical, prognostic, biomarker, causal, or patient-identity claim."
+  ],
+  "query": {
+    "cohort_id": "tcga_luad_gdc_r46_molecular_v3",
+    "denominator_basis": "tcga_luad_gdc_r46_wxs_masked_ssm_primary_tumor_samples",
+    "entity_level": "sample",
+    "operation": "cohort_count",
+    "predicate": {
+      "access": "open",
+      "call_status": "NEGATIVE",
+      "canonical_transcript_id": "ENST00000275493",
+      "data_category": "Simple Nucleotide Variation",
+      "data_format": "MAF",
+      "data_type": "Masked Somatic Mutation",
+      "experimental_strategy": "WXS",
+      "gene_symbol": "EGFR",
+      "hgvsp_short_in": [
+        "p.L858R",
+        "p.E746_A750del"
+      ],
+      "ncbi_build": "GRCh38",
+      "project_id": "TCGA-LUAD",
+      "require_explicit_negative_coverage": true,
+      "sample_type": "Primary Tumor",
+      "source": "gdc",
+      "state": "released"
+    },
+    "snapshot_id": "gdc-8d5ccf3bc2893baa"
+  },
+  "query_sha256": "1ce148dd371295c0255694673aa66d56a0aa6562b1870c31ff7848b1717b2eb3",
+  "result": {
+    "evidence_refs": [],
+    "reason_code": "INCOMPLETE_SNAPSHOT",
+    "result": {},
+    "status": "UNKNOWN",
+    "witness": []
+  },
+  "rule_version": "rules-2.0.0",
+  "signature": "natFvbpIxUSOEneNQFUdcfnEyeRFBmOpZbjqU6utQf76js/yG1yjT/LlyZQEaZzyDOGF1kbUcTwCB+C3YbM2Cg==",
+  "signature_algorithm": "Ed25519",
+  "snapshot_id": "gdc-8d5ccf3bc2893baa",
+  "snapshot_manifest_sha256": "71488379a4ed5c090e9d36bbdeca53bb44fe0922e1dda908edd463225f502dd1",
+  "snapshot_sha256": "8d5ccf3bc2893baaf5cfb5b01a374dd34c27601b5093b5e1368174f1232896c9",
+  "verification_public_key": "keys/public_key.pem"
+}

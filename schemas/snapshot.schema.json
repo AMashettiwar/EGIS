@@ -1,18 +1,52 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Frozen snapshot manifest",
-  "type": "object",
-  "required": ["snapshot_id", "source", "schema_version", "adapter_version", "raw_content_sha256", "normalized_content_sha256", "derivation", "sqlite_sha256", "complete", "publication"],
   "properties": {
-    "snapshot_id": {"type": "string"},
-    "source": {"type": "string"},
-    "schema_version": {"type": "string"},
-    "adapter_version": {"type": "string"},
-    "raw_content_sha256": {"type": "string"},
-    "normalized_content_sha256": {"type": "string"},
-    "derivation": {"type": "object"},
-    "sqlite_sha256": {"type": "string"},
-    "complete": {"type": "boolean"},
-    "publication": {"enum": ["READY", "INCOMPLETE"]}
-  }
+    "adapter_version": {
+      "type": "string"
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "derivation": {
+      "type": "object"
+    },
+    "normalized_content_sha256": {
+      "type": "string"
+    },
+    "publication": {
+      "enum": [
+        "READY",
+        "INCOMPLETE"
+      ]
+    },
+    "raw_content_sha256": {
+      "type": "string"
+    },
+    "schema_version": {
+      "type": "string"
+    },
+    "snapshot_id": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "sqlite_sha256": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "snapshot_id",
+    "source",
+    "schema_version",
+    "adapter_version",
+    "raw_content_sha256",
+    "normalized_content_sha256",
+    "derivation",
+    "sqlite_sha256",
+    "complete",
+    "publication"
+  ],
+  "title": "Frozen snapshot manifest",
+  "type": "object"
 }

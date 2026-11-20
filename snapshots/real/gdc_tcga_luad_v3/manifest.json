@@ -1,0 +1,421 @@
+{
+  "adapter_version": "gdc-public-api-v3",
+  "cohort_id": "tcga_luad_gdc_r46_molecular_v3",
+  "complete": true,
+  "coverage": {
+    "gdc": {
+      "aliquot_count": 7978,
+      "assay_count": 93,
+      "cohort_id": "tcga_luad_gdc_r46_molecular_v3",
+      "complete": true,
+      "expected_total": 585,
+      "page_count": 3,
+      "retrieved_count": 585,
+      "rnaseq_file_count": 601,
+      "sample_count": 1781,
+      "scope": "TCGA-LUAD",
+      "scoped_file_count": 1219,
+      "snv_maf_file_count": 618,
+      "ssm_occurrences_expected_total": 93
+    }
+  },
+  "derivation": {
+    "input": "raw.json",
+    "input_sha256": "8d5ccf3bc2893baaf5cfb5b01a374dd34c27601b5093b5e1368174f1232896c9",
+    "output": "normalized.json",
+    "output_sha256": "57ea7cf8f33afc6c2361eb92f7a795b622548ea15c7c0c3a534c54f99a02eb49",
+    "version": "raw-to-normalized-v1"
+  },
+  "fixture_id": null,
+  "manifest_sha256": "71488379a4ed5c090e9d36bbdeca53bb44fe0922e1dda908edd463225f502dd1",
+  "normalized_content_sha256": "57ea7cf8f33afc6c2361eb92f7a795b622548ea15c7c0c3a534c54f99a02eb49",
+  "provenance_metadata": {
+    "base_snapshot_foundation": {
+      "cohort_id": "tcga_luad_gdc_r46_biospecimen_v2",
+      "manifest_sha256": "b64e2117e63534aa943f390c1aceb29dc1a14bcee279771e5effc1f7cfba8e09",
+      "raw_content_sha256": "89322a7056bca57755b488b2057fe804b53ca81ab8c47481618b2765513614b5",
+      "snapshot_dir": "snapshots/real/gdc_tcga_luad_v2",
+      "snapshot_id": "gdc-89322a7056bca577"
+    },
+    "freeze_timestamp": "2026-11-19T00:21:26+00:00",
+    "integrity_errors": [],
+    "is_frozen": true,
+    "known_coverage_gaps": [
+      "Molecular variant ingest is explicitly scoped to open-access GDC /ssm_occurrences in gene EGFR (GRCh38, canonical transcript ENST00000275493); other genes (e.g. KRAS, ALK) are not ingested in this snapshot.",
+      "GDC open-access WXS Masked Somatic Mutation MAFs and /ssm_occurrences report called positive masked somatic variants only; explicit wild-type (NEGATIVE) calls and locus-level sequencing depth at unmutated sites are not provided.",
+      "Controlled-access BAM/VCF/MAF files, pathology_reports, and cross-cohort GDC-to-PDC identity mappings are omitted."
+    ],
+    "linkage_audit": {
+      "egfr_ssm_occurrences": {
+        "canonical_transcript_matched": 93,
+        "missing_maf_file_link": 0,
+        "multi_maf_file_link": 0,
+        "multiply_matched": 0,
+        "total_occurrences": 93,
+        "unique_maf_file_linked": 93,
+        "uniquely_linked": 93,
+        "unmatched": 0,
+        "zero_observation": 0
+      },
+      "snv_files": {
+        "multiply_matched_tumor_aliquot": 0,
+        "orphan_aliquot_links": 0,
+        "orphan_sample_links": 0,
+        "total_files": 618,
+        "uniquely_linked_tumor_aliquot": 618,
+        "unmatched_tumor_aliquot": 0
+      }
+    },
+    "molecular_coverage": {
+      "acquired_gene_symbols": [
+        "EGFR"
+      ],
+      "canonical_transcript_id": "ENST00000275493",
+      "coverage_completeness": "POSITIVE_ONLY_OPEN_ACCESS_MAF",
+      "endpoint": "https://api.gdc.cancer.gov/ssm_occurrences",
+      "explicit_negative_calls_present": false,
+      "limitation": "GDC /ssm_occurrences and open-access WXS Masked Somatic Mutation MAF files record positive called masked somatic variants only. Locus-level callable reference depth is absent; samples without a listed variant cannot be inferred to be wild-type / negative.",
+      "locus_level_callable_coverage_present": false,
+      "ncbi_build": "GRCh38",
+      "not_listed_is_wildtype": false
+    },
+    "named_universes": {
+      "tcga_luad_gdc_r46_all_samples": "All distinct GDC TCGA-LUAD biospecimen samples linked via HAS_SAMPLE to frozen cases in Data Release 46.0.",
+      "tcga_luad_gdc_r46_primary_tumor_samples": "All distinct GDC TCGA-LUAD biospecimen samples with sample_type == 'Primary Tumor' linked via HAS_SAMPLE to frozen cases in Data Release 46.0.",
+      "tcga_luad_gdc_r46_wxs_masked_ssm_primary_tumor_samples": "All distinct GDC TCGA-LUAD Primary Tumor samples in Data Release 46.0 linked via HAS_ALIQUOT + HAS_FILE to at least one released open-access WXS Masked Somatic Mutation (MAF) file. Denominator establishes WXS Masked Somatic Mutation MAF availability, not wild-type locus coverage."
+    },
+    "release_pinning_limitation": "GDC public REST API endpoints (/cases, /files, /ssm_occurrences, /projects) serve the current active release and do not accept an immutable historical release query parameter; reproducibility is anchored by freezing and SHA-256 hashing all raw HTTP responses in raw.json and manifest.json.",
+    "requests_and_pagination": {
+      "cases": {
+        "endpoint": "https://api.gdc.cancer.gov/cases",
+        "fields": "case_id,submitter_id,project.project_id,disease_type,primary_site,samples.sample_id,samples.submitter_id,samples.sample_type,samples.tissue_type,samples.tumor_descriptor,samples.preservation_method,samples.portions.analytes.aliquots.aliquot_id,samples.portions.analytes.aliquots.submitter_id,samples.portions.analytes.aliquots.analyte_type",
+        "filters": {
+          "content": {
+            "field": "project.project_id",
+            "value": "TCGA-LUAD"
+          },
+          "op": "="
+        },
+        "page_count": 3,
+        "page_size": 200,
+        "pages": [
+          {
+            "offset": 0,
+            "request_url": "https://api.gdc.cancer.gov/cases?filters=%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D&fields=case_id%2Csubmitter_id%2Cproject.project_id%2Cdisease_type%2Cprimary_site%2Csamples.sample_id%2Csamples.submitter_id%2Csamples.sample_type%2Csamples.tissue_type%2Csamples.tumor_descriptor%2Csamples.preservation_method%2Csamples.portions.analytes.aliquots.aliquot_id%2Csamples.portions.analytes.aliquots.submitter_id%2Csamples.portions.analytes.aliquots.analyte_type&sort=case_id%3Aasc&format=json&size=200&from=0",
+            "response_sha256": "06d80572c368f776e77c2cc4c8dbdef5577ee0a2ce464a2095bb0cedc5c72ffb",
+            "returned_count": 200
+          },
+          {
+            "offset": 200,
+            "request_url": "https://api.gdc.cancer.gov/cases?filters=%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D&fields=case_id%2Csubmitter_id%2Cproject.project_id%2Cdisease_type%2Cprimary_site%2Csamples.sample_id%2Csamples.submitter_id%2Csamples.sample_type%2Csamples.tissue_type%2Csamples.tumor_descriptor%2Csamples.preservation_method%2Csamples.portions.analytes.aliquots.aliquot_id%2Csamples.portions.analytes.aliquots.submitter_id%2Csamples.portions.analytes.aliquots.analyte_type&sort=case_id%3Aasc&format=json&size=200&from=200",
+            "response_sha256": "5b6aeae47ec84bbbd9feba3e597d3421787ba523b7631f4d53d6391cf4322f4b",
+            "returned_count": 200
+          },
+          {
+            "offset": 400,
+            "request_url": "https://api.gdc.cancer.gov/cases?filters=%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D&fields=case_id%2Csubmitter_id%2Cproject.project_id%2Cdisease_type%2Cprimary_site%2Csamples.sample_id%2Csamples.submitter_id%2Csamples.sample_type%2Csamples.tissue_type%2Csamples.tumor_descriptor%2Csamples.preservation_method%2Csamples.portions.analytes.aliquots.aliquot_id%2Csamples.portions.analytes.aliquots.submitter_id%2Csamples.portions.analytes.aliquots.analyte_type&sort=case_id%3Aasc&format=json&size=200&from=400",
+            "response_sha256": "44dc1052087cdbbe1ae6e9816a6b52e146d86960e8d51884993dd9eacbc76f24",
+            "returned_count": 185
+          }
+        ],
+        "pagination_total": 585,
+        "sort": "case_id:asc"
+      },
+      "egfr_ssm_occurrences": {
+        "endpoint": "https://api.gdc.cancer.gov/ssm_occurrences",
+        "expand": "case,case.observation,case.observation.sample,case.observation.read_depth,case.observation.variant_calling,case.observation.input_bam_file,ssm,ssm.consequence,ssm.consequence.transcript,ssm.consequence.transcript.annotation,ssm.consequence.transcript.gene",
+        "filters": {
+          "content": [
+            {
+              "content": {
+                "field": "case.project.project_id",
+                "value": "TCGA-LUAD"
+              },
+              "op": "="
+            },
+            {
+              "content": {
+                "field": "ssm.consequence.transcript.gene.symbol",
+                "value": "EGFR"
+              },
+              "op": "="
+            }
+          ],
+          "op": "and"
+        },
+        "page_count": 1,
+        "page_size": 200,
+        "pages": [
+          {
+            "offset": 0,
+            "request_url": "https://api.gdc.cancer.gov/ssm_occurrences?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22case.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22ssm.consequence.transcript.gene.symbol%22%2C%22value%22%3A%22EGFR%22%7D%7D%5D%7D&expand=case%2Ccase.observation%2Ccase.observation.sample%2Ccase.observation.read_depth%2Ccase.observation.variant_calling%2Ccase.observation.input_bam_file%2Cssm%2Cssm.consequence%2Cssm.consequence.transcript%2Cssm.consequence.transcript.annotation%2Cssm.consequence.transcript.gene&sort=ssm_occurrence_id%3Aasc&format=json&size=200&from=0",
+            "response_sha256": "df13d30db62f6717c742da0a176feb4265fce77ce8a4de8dbcdad48ff0fd9582",
+            "returned_count": 93
+          }
+        ],
+        "pagination_total": 93,
+        "sort": "ssm_occurrence_id:asc"
+      },
+      "rnaseq_files": {
+        "endpoint": "https://api.gdc.cancer.gov/files",
+        "fields": "file_id,file_name,data_category,data_type,data_format,experimental_strategy,access,state,md5sum,file_size,cases.case_id,cases.samples.sample_id,cases.samples.sample_type,cases.samples.portions.analytes.aliquots.aliquot_id",
+        "filters": {
+          "content": [
+            {
+              "content": {
+                "field": "cases.project.project_id",
+                "value": "TCGA-LUAD"
+              },
+              "op": "="
+            },
+            {
+              "content": {
+                "field": "data_category",
+                "value": "Transcriptome Profiling"
+              },
+              "op": "="
+            },
+            {
+              "content": {
+                "field": "data_type",
+                "value": "Gene Expression Quantification"
+              },
+              "op": "="
+            },
+            {
+              "content": {
+                "field": "experimental_strategy",
+                "value": "RNA-Seq"
+              },
+              "op": "="
+            },
+            {
+              "content": {
+                "field": "access",
+                "value": "open"
+              },
+              "op": "="
+            }
+          ],
+          "op": "and"
+        },
+        "page_count": 4,
+        "page_size": 200,
+        "pages": [
+          {
+            "offset": 0,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Transcriptome+Profiling%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_type%22%2C%22value%22%3A%22Gene+Expression+Quantification%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22experimental_strategy%22%2C%22value%22%3A%22RNA-Seq%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id&sort=file_id%3Aasc&format=json&size=200&from=0",
+            "response_sha256": "4e14ea94309d5f756ec23d3e4e4a2694e32c2b7e83330e940b040cf8644458ab",
+            "returned_count": 200
+          },
+          {
+            "offset": 200,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Transcriptome+Profiling%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_type%22%2C%22value%22%3A%22Gene+Expression+Quantification%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22experimental_strategy%22%2C%22value%22%3A%22RNA-Seq%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id&sort=file_id%3Aasc&format=json&size=200&from=200",
+            "response_sha256": "eb3b8b37b5d5627be2af5dfac7b3cf45765134636abbe8e917cae41b7231d23a",
+            "returned_count": 200
+          },
+          {
+            "offset": 400,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Transcriptome+Profiling%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_type%22%2C%22value%22%3A%22Gene+Expression+Quantification%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22experimental_strategy%22%2C%22value%22%3A%22RNA-Seq%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id&sort=file_id%3Aasc&format=json&size=200&from=400",
+            "response_sha256": "c7cdae26f369be00f7e4c6b54c09c70fd64ec13c8acb2c76d4fb23aceea78fa9",
+            "returned_count": 200
+          },
+          {
+            "offset": 600,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Transcriptome+Profiling%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_type%22%2C%22value%22%3A%22Gene+Expression+Quantification%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22experimental_strategy%22%2C%22value%22%3A%22RNA-Seq%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id&sort=file_id%3Aasc&format=json&size=200&from=600",
+            "response_sha256": "15253d0c29481f4df4fe002ca9f7cab07d5ed85371f50bb9ea87190523bac4d5",
+            "returned_count": 1
+          }
+        ],
+        "pagination_total": 601,
+        "sort": "file_id:asc"
+      },
+      "wxs_snv_files": {
+        "endpoint": "https://api.gdc.cancer.gov/files",
+        "fields": "file_id,file_name,data_category,data_type,data_format,experimental_strategy,access,state,md5sum,file_size,analysis.workflow_type,cases.case_id,cases.samples.sample_id,cases.samples.sample_type,cases.samples.portions.analytes.aliquots.aliquot_id,cases.samples.portions.analytes.aliquots.submitter_id",
+        "filters": {
+          "content": [
+            {
+              "content": {
+                "field": "cases.project.project_id",
+                "value": "TCGA-LUAD"
+              },
+              "op": "="
+            },
+            {
+              "content": {
+                "field": "data_category",
+                "value": "Simple Nucleotide Variation"
+              },
+              "op": "="
+            },
+            {
+              "content": {
+                "field": "access",
+                "value": "open"
+              },
+              "op": "="
+            }
+          ],
+          "op": "and"
+        },
+        "page_count": 4,
+        "page_size": 200,
+        "pages": [
+          {
+            "offset": 0,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Simple+Nucleotide+Variation%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Canalysis.workflow_type%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id%2Ccases.samples.portions.analytes.aliquots.submitter_id&sort=file_id%3Aasc&format=json&size=200&from=0",
+            "response_sha256": "7c2261e237c36cf9c0cd289858848a64c837a4ad6e05171a76b9b7ff1b376759",
+            "returned_count": 200
+          },
+          {
+            "offset": 200,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Simple+Nucleotide+Variation%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Canalysis.workflow_type%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id%2Ccases.samples.portions.analytes.aliquots.submitter_id&sort=file_id%3Aasc&format=json&size=200&from=200",
+            "response_sha256": "fbe596ba8f99fc058147e55a24e4fb1a9feaae49a12adf2b8e2d878637b5d584",
+            "returned_count": 200
+          },
+          {
+            "offset": 400,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Simple+Nucleotide+Variation%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Canalysis.workflow_type%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id%2Ccases.samples.portions.analytes.aliquots.submitter_id&sort=file_id%3Aasc&format=json&size=200&from=400",
+            "response_sha256": "bd727d80eb43dec1d48540955321cf966abdfe7b9ab246b64ef6e70c56839ff5",
+            "returned_count": 200
+          },
+          {
+            "offset": 600,
+            "request_url": "https://api.gdc.cancer.gov/files?filters=%7B%22op%22%3A%22and%22%2C%22content%22%3A%5B%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22cases.project.project_id%22%2C%22value%22%3A%22TCGA-LUAD%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22data_category%22%2C%22value%22%3A%22Simple+Nucleotide+Variation%22%7D%7D%2C%7B%22op%22%3A%22%3D%22%2C%22content%22%3A%7B%22field%22%3A%22access%22%2C%22value%22%3A%22open%22%7D%7D%5D%7D&fields=file_id%2Cfile_name%2Cdata_category%2Cdata_type%2Cdata_format%2Cexperimental_strategy%2Caccess%2Cstate%2Cmd5sum%2Cfile_size%2Canalysis.workflow_type%2Ccases.case_id%2Ccases.samples.sample_id%2Ccases.samples.sample_type%2Ccases.samples.portions.analytes.aliquots.aliquot_id%2Ccases.samples.portions.analytes.aliquots.submitter_id&sort=file_id%3Aasc&format=json&size=200&from=600",
+            "response_sha256": "11027020881ebdb5136c8971ef3def9f7d3f9003aa3d0265b910c022c979eedf",
+            "returned_count": 18
+          }
+        ],
+        "pagination_total": 618,
+        "sort": "file_id:asc"
+      }
+    },
+    "row_counts": {
+      "aliquots": 7978,
+      "assays": 93,
+      "cases": 585,
+      "evidence": 63550,
+      "files": 1219,
+      "identity_mappings": 0,
+      "pathology_reports": 0,
+      "patients": 0,
+      "relationships": 11164,
+      "samples": 1781
+    },
+    "supported_entity_levels": [
+      "case",
+      "sample",
+      "aliquot",
+      "assay",
+      "file"
+    ],
+    "tables": {
+      "aliquots": {
+        "declared_completeness": "COMPLETE",
+        "declared_row_count": 7978,
+        "sha256": "8f2cb275ee9afb362a6343ca125cc5f3dbf027f5765de9df51ae1ce40e20496b"
+      },
+      "assays": {
+        "declared_completeness": "COMPLETE",
+        "declared_row_count": 93,
+        "scope_note": "Scoped strictly to TCGA-LUAD open-access EGFR somatic mutation occurrences (/ssm_occurrences, GRCh38, positive calls only).",
+        "sha256": "7498800f8c45a1a4c06cbd7da30c24845cb579a3b5190bc6d067854ddb6786f2"
+      },
+      "cases": {
+        "declared_completeness": "COMPLETE",
+        "declared_row_count": 585,
+        "sha256": "d7dc0eb35bc6eac9ea5110db4e067e274ed5946d0d84a9e7e34330dd529d1f06"
+      },
+      "files": {
+        "declared_completeness": "COMPLETE",
+        "declared_row_count": 1219,
+        "scope_note": "Includes 601 open RNA-Seq TSV files (v2) plus 618 open WXS Masked Somatic Mutation MAF files (v3).",
+        "sha256": "d3ed34b99079ec8949bceccf09f72daa8295319eda84322208d88e179abb4b59"
+      },
+      "samples": {
+        "declared_completeness": "COMPLETE",
+        "declared_row_count": 1781,
+        "sha256": "85be6a7866158525c74dcdb556178e6526e905781e00532b50ad10b8b6b0d2c9"
+      }
+    },
+    "transformations": [
+      "Verified and reused frozen biospecimen foundation (585 cases, 1781 samples, 7978 aliquots) and 601 open RNA-Seq TSV files from snapshots/real/gdc_tcga_luad_v2.",
+      "Deduplicated 618 open-access TCGA-LUAD WXS Masked Somatic Mutation MAF files and linked each file via HAS_FILE(tumor_aliquot -> file) while preserving matched normal aliquot metadata.",
+      "Ingested all 93 TCGA-LUAD EGFR /ssm_occurrences records (GRCh38, chromosome chr7, canonical transcript ENST00000275493) into entity kind='assay', linking each record 1-to-1 via HAS_ASSAY(tumor_aliquot -> ssm_occurrence) and HAS_FILE(ssm_occurrence -> wxs_maf_file)."
+    ],
+    "upstream_source": "NCI Genomic Data Commons (GDC) Public REST API",
+    "upstream_status": {
+      "commit": "8f7c2a51ab0084b216ad1b62a3fae8b945439c53",
+      "data_release": "Data Release 46.0 - August 10, 2026",
+      "data_release_version": {
+        "major": 46,
+        "minor": 0,
+        "release_date": "2026-08-10"
+      },
+      "response_sha256": "a8b1c69f9cfc678486e1c897aee6d878f47fab9cb4c60eb6818598bbe30a7139",
+      "tag": "8.5.0",
+      "url": "https://api.gdc.cancer.gov/status"
+    }
+  },
+  "publication": "READY",
+  "raw_content_sha256": "8d5ccf3bc2893baaf5cfb5b01a374dd34c27601b5093b5e1368174f1232896c9",
+  "request": {
+    "base_v2_snapshot_id": "gdc-89322a7056bca577",
+    "kind": "gdc_v3_biospecimen_and_egfr_molecular_evidence",
+    "page_size": 200,
+    "project": "TCGA-LUAD",
+    "snv_file_fields": "file_id,file_name,data_category,data_type,data_format,experimental_strategy,access,state,md5sum,file_size,analysis.workflow_type,cases.case_id,cases.samples.sample_id,cases.samples.sample_type,cases.samples.portions.analytes.aliquots.aliquot_id,cases.samples.portions.analytes.aliquots.submitter_id",
+    "snv_file_filters": {
+      "content": [
+        {
+          "content": {
+            "field": "cases.project.project_id",
+            "value": "TCGA-LUAD"
+          },
+          "op": "="
+        },
+        {
+          "content": {
+            "field": "data_category",
+            "value": "Simple Nucleotide Variation"
+          },
+          "op": "="
+        },
+        {
+          "content": {
+            "field": "access",
+            "value": "open"
+          },
+          "op": "="
+        }
+      ],
+      "op": "and"
+    },
+    "ssm_expand": "case,case.observation,case.observation.sample,case.observation.read_depth,case.observation.variant_calling,case.observation.input_bam_file,ssm,ssm.consequence,ssm.consequence.transcript,ssm.consequence.transcript.annotation,ssm.consequence.transcript.gene",
+    "ssm_filters": {
+      "content": [
+        {
+          "content": {
+            "field": "case.project.project_id",
+            "value": "TCGA-LUAD"
+          },
+          "op": "="
+        },
+        {
+          "content": {
+            "field": "ssm.consequence.transcript.gene.symbol",
+            "value": "EGFR"
+          },
+          "op": "="
+        }
+      ],
+      "op": "and"
+    }
+  },
+  "retrieved_at_utc": "2026-11-19T00:21:26+00:00",
+  "schema_version": "1.0.0",
+  "snapshot_id": "gdc-8d5ccf3bc2893baa",
+  "source": "gdc",
+  "sqlite_sha256": "b56a15ca9ae42accff15258262fbf49fbc5ce7ffce5cbfc4f43349dc5e564b48"
+}
