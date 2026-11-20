@@ -28,4 +28,6 @@ build/
 snapshots/multimodal/*/raw/
 snapshots/multimodal/*/*.parquet
 snapshots/multimodal/*/slides/
+snapshots/discovery/*/*.parquet
 artifacts/multimodal-demo/
+artifacts/discovery-report/
